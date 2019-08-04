@@ -8,6 +8,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "function_pointers"
+version = "0.1.0"
+dependencies = [
+ "structs 0.1.0",
+]
+
+[[package]]
 name = "generics"
 version = "0.1.0"
 
@@ -16,6 +23,7 @@ name = "main"
 version = "0.1.0"
 dependencies = [
  "dynamic 0.1.0",
+ "function_pointers 0.1.0",
  "generics 0.1.0",
  "structs 0.1.0",
 ]

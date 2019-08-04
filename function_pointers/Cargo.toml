@@ -1,5 +1,5 @@
 [package]
-name = "main"
+name = "function_pointers"
 version = "0.1.0"
 authors = ["Konstantinos Triantafyllou <ko.trian@gmail.com>"]
 edition = "2018"
@@ -7,7 +7,4 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-generics  = { path = "../generics" }
-dynamic   = { path = "../dynamic" }
-structs   = { path = "../structs" }
-function_pointers = { path = "../function_pointers" }
+structs = { path = "../structs" }

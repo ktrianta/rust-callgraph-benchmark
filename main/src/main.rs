@@ -121,16 +121,44 @@ mod trait_objects_bench {
 }
 
 mod function_pointers_bench {
-    fn indirection_one() {
+    use structs::lib::fat::Fat;
+    use structs::lib::fat::Thin;
+    use structs::traits::foo::Foo;
+    use structs::traits::foo::Bar;
 
+    use function_pointers::lib::FatMethod;
+    use function_pointers::lib::FooMethod;
+    use function_pointers::lib::GenMethod;
+
+    fn indirection_one(foo: &Fat, fun: &dyn Fn(&Fat) -> String) {
+        println!("{}", fun(foo));
     }
 
-    fn indirection_two() {
-
+    fn indirection_two(foo: &Fat, fun: FatMethod) {
+        println!("{}", fun(foo));
     }
+
+//    fn indirection_three(foo: impl Foo, fun: GenMethod<Foo>) {
+//        //println!("{}", fun(foo));
+//    }
+
+//    fn indirection_four(t: &Thin, fun: &dyn Fn(&Foo) -> String) {
+//        println!("{}", fun(t));
+//    }
 
     pub fn run() {
+        let f = Fat(10);
 
+        indirection_one(&f, &Fat::method);
+        indirection_one(&f, &<Fat as Foo>::method);
+
+        indirection_two(&f, Fat::method);
+        indirection_two(&f, Foo::method);
+        indirection_two(&f, <Fat as Bar>::method);
+
+        //fun(&f);
+        //indirection_three(f, Foo::method);
+        //indirection_four(&Thin, &fun);
     }
 }
 
