@@ -163,17 +163,27 @@ mod function_pointers_bench {
 }
 
 mod helpers {
-    // Function accepts a function pointer as its argument.
-    pub fn run_benchmark(bench: fn () -> ()) {
-        // Which function calls should be included here for a call-graph to be sound?
+    // Accepts a function pointer as its argument and calls the function it points to.
+    pub fn run_benchmark(bench: &fn () -> ()) {
+        // There is a dedicated function pointers benchmark but it does not hurt to
+        // check again here. This is a part of the benchmark after all.
         bench();
+
+        // TODO: Define which functions should be considered by a call-graph generator
+        // for the above call.
     }
 }
 
 fn main() {
-    helpers::run_benchmark(structs_bench::run);
-    helpers::run_benchmark(traits_bench::run);
-    helpers::run_benchmark(generics_bench::run);
-    helpers::run_benchmark(trait_objects_bench::run);
-    helpers::run_benchmark(function_pointers_bench::run);
+    let benchmarks = [
+        structs_bench::run,
+        traits_bench::run,
+        generics_bench::run,
+        trait_objects_bench::run,
+        function_pointers_bench::run
+    ];
+
+    for bench in benchmarks.into_iter() {
+        helpers::run_benchmark(bench);
+    }
 }
