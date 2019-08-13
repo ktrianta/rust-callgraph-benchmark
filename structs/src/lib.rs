@@ -2,6 +2,7 @@ pub mod traits;
 
 pub mod lib {
     pub mod fat;
+    pub mod thin;
     pub mod helloworld;
 
     use crate::traits::foo::Foo;

@@ -122,7 +122,7 @@ mod trait_objects_bench {
 
 mod function_pointers_bench {
     use structs::lib::fat::Fat;
-    use structs::lib::fat::Thin;
+    use structs::lib::thin::Thin;
     use structs::traits::foo::Foo;
     use structs::traits::foo::Bar;
 

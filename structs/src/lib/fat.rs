@@ -35,15 +35,6 @@ impl Foo for Fat {
 
 }
 
-pub struct Thin;
-
-impl Foo for Thin {
-    fn method(&self) -> String {
-        format!("Thin+Foo")
-    }
-
-}
-
 impl Bar for Fat {
     fn method(&self) -> String {
         format!("Fat+Bar: uint32 {}", self.0)
