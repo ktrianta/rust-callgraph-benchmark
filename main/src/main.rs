@@ -162,6 +162,43 @@ mod function_pointers_bench {
     }
 }
 
+mod conditionally_compiled_bench {
+    pub fn run() {
+        use structs::lib::fat::Fat;
+        use structs::lib::thin::Thin;
+        use structs::traits::foo::Foo;
+        use structs::traits::foo::Bar;
+        use conditionally_compiled::lib::foo;
+        use conditionally_compiled::lib::bar;
+
+        let fat = Fat(100);
+        let thin = Thin;
+        let foo_items: Vec<&dyn Foo> = vec![&fat, &thin];
+        let bar_items: Vec<&dyn Bar> = vec![&fat];   // does not contain 'thin'. The compiler
+                                                     // is aware that Bar is not implemented for Thin.
+
+        for item in foo_items.into_iter() {
+            let result = foo(item);
+
+            // Function foo is conditionally compiled on feature 'foo'.
+            // If 'foo' is not defined the returned value is the empty String.
+            if !result.is_empty() {
+                println!("{}", result);
+            }
+        }
+
+        for item in bar_items.into_iter() {
+            let result = bar(item);
+
+            // Function bar is conditionally compiled on feature 'bar'.
+            // If 'bar' is not defined the returned value is the empty String.
+            if !result.is_empty() {
+                println!("{}", result);
+            }
+        }
+    }
+}
+
 mod helpers {
     // Accepts a function pointer as its argument and calls the function it points to.
     pub fn run_benchmark(bench: &fn () -> ()) {
@@ -180,7 +217,8 @@ fn main() {
         traits_bench::run,
         generics_bench::run,
         trait_objects_bench::run,
-        function_pointers_bench::run
+        function_pointers_bench::run,
+        conditionally_compiled_bench::run
     ];
 
     for bench in benchmarks.into_iter() {

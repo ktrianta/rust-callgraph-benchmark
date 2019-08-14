@@ -6,8 +6,13 @@ edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[features]
+foo = ["conditionally_compiled/foo"]
+bar = ["conditionally_compiled/bar"]
+
 [dependencies]
 generics  = { path = "../generics" }
 dynamic   = { path = "../dynamic" }
 structs   = { path = "../structs" }
 function_pointers = { path = "../function_pointers" }
+conditionally_compiled = { path = "../conditionally_compiled" }
