@@ -64,3 +64,12 @@ Calls within package boundaries are also covered by most of these packages.
     **structs**
 - Description:
     Function pointer types declarations.
+
+### conditionally\_compiled
+
+- Crates:
+    1 *library*
+- Depends on:
+    **structs**
+- Description:
+    Conditionally compiled functions.
