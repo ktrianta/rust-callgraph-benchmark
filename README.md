@@ -14,8 +14,8 @@ in Rust code.
 The benchmark is built around the **main** package, which contains a single
 binary crate. To assess how cross-package calls are analyzed by call-graph
 generators we split the code across multiple library crates and packages.
-The main crate calls the functions and methods implemented in these packages.
-Calls within package boundaries are also covered by most of these packages.
+The **main** crate calls the functions and methods of these packages.
+Calls within package boundaries are also covered by most of the packages.
 
 ### main
 
