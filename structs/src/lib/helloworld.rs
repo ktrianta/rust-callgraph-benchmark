@@ -49,6 +49,7 @@ impl HelloWorld {
         format!("{} {}{}", hi, world, formatted)
     }
 
-    fn format(&self) -> String { format!("{}!", self.0)
+    fn format(&self) -> String {
+        format!("{}!", self.0)
     }
 }
