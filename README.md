@@ -22,7 +22,8 @@ Calls within package boundaries are also covered by most of the packages.
 - Crates:
     1 *binary*
 - Depends on:
-    **structs**, **generics**, **dynamic**, **function\_pointers**
+    **structs**, **generics**, **dynamic**, **function\_pointers**,
+    **conditionally\_compiled**
 - Description:
     Main benchmark code. Calls all other benchmark libraries' functions and
     methods.
