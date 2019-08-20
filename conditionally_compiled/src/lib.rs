@@ -1,17 +1,33 @@
+// TODO: Define how conditionally compiled code should be handled by call-graph generators.
+
 pub mod lib {
     use structs::traits::foo::Foo;
     use structs::traits::foo::Bar;
 
     // There exist two versions of function 'foo' and which one is compiled depends on whether
-    // feature foo is defined during compilation. If it is, foo returns the result of calling
-    // the 'method' method of trait object x. Otherwise, it returns the empty string.
+    // feature foo is defined during compilation. If it is, 'foo' returns the result of calling
+    // the 'method' method of trait object x. Otherwise, it returns the empty string. To achieve
+    // this 'foo' calls 'foo_private', which is also conditionally compiled.
     #[cfg(feature = "foo")]
     pub fn foo(x: &dyn Foo) -> String {
+        foo_private(x)
+    }
+
+    #[cfg(not(feature = "foo"))]
+    pub fn foo(x: &dyn Foo) -> String {
+        foo_private(x)
+    }
+
+    // 'foo_private' works as an indirection step. The 'foo' function that is compiled when
+    // the foo feature is enabled calls the 'foo_private' function compiled when the foo
+    // feature is enabled.
+    #[cfg(feature = "foo")]
+    fn foo_private(x: &dyn Foo) -> String {
         x.method()
     }
 
     #[cfg(not(feature = "foo"))]
-    pub fn foo(_x: &dyn Foo) -> String {
+    fn foo_private(_x: &dyn Foo) -> String {
         String::new()
     }
 
@@ -25,4 +41,5 @@ pub mod lib {
     pub fn bar(_x: &dyn Bar) -> String {
         String::new()
     }
+
 }
