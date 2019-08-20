@@ -16,3 +16,4 @@ dynamic   = { path = "../dynamic" }
 structs   = { path = "../structs" }
 function_pointers = { path = "../function_pointers" }
 conditionally_compiled = { path = "../conditionally_compiled" }
+macros = { path = "../macros" }

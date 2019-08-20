@@ -199,6 +199,22 @@ mod conditionally_compiled_bench {
     }
 }
 
+mod macros_bench {
+    pub fn run() {
+        use macros::foo;
+        use structs::lib::fat::Fat;
+        use structs::lib::thin::Thin;
+
+        let fat = Fat(1000);
+        let thin = Thin;
+        let results = foo![&fat, &thin];
+
+        for result in results.iter() {
+            println!("{}", result);
+        }
+    }
+}
+
 mod helpers {
     // Accepts a function pointer as its argument and calls the function it points to.
     pub fn run_benchmark(bench: &fn () -> ()) {
@@ -218,7 +234,8 @@ fn main() {
         generics_bench::run,
         trait_objects_bench::run,
         function_pointers_bench::run,
-        conditionally_compiled_bench::run
+        conditionally_compiled_bench::run,
+        macros_bench::run,
     ];
 
     for bench in benchmarks.into_iter() {

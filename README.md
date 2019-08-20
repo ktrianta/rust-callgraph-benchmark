@@ -74,3 +74,12 @@ Calls within package boundaries are also covered by most of the packages.
     **structs**
 - Description:
     Conditionally compiled functions.
+
+### macros
+
+- Crates:
+    1 *library*
+- Depends on:
+    **structs**
+- Description:
+    Function and method calls inside macros.
