@@ -12,4 +12,14 @@ pub mod lib {
     pub trait BazTrait {
         fn another_method(&self) -> String;
     }
+
+    pub trait GenericFooTrait<T> {
+        fn method<K>(&self, _: T, _: K) -> String;
+    }
+
+    pub mod bounds {
+        pub trait BoundTrait {
+            fn sub(&self) -> i32;
+        }
+    }
 }

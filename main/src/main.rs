@@ -69,28 +69,6 @@ mod traits_bench {
     }
 }
 
-mod generics_bench {
-    pub fn run() {
-        // generics::sub::traits::SubTrait is implemented for Sub, Sub1 and Sub2.
-        use generics::sub::sub::Sub;
-        use generics::sub::sub1::Sub1;
-        use generics::sub::sub2::Sub2;
-
-        // monomorphized is a generic function with a trait bound on SubTrait.
-        use generics::lib::monomorphized;
-
-        let sub = Sub(100);
-        let sub1 = Sub1(100);
-        let sub2 = Sub2(100);
-
-        // The calls to function monomorphized should be monomorphized.
-        // No dynamic dispatch should be needed to resolve these calls.
-        println!("{}", monomorphized(sub));
-        println!("{}", monomorphized(sub1));
-        println!("{}", monomorphized(sub2));
-    }
-}
-
 mod trait_objects_bench {
     pub fn run() {
         // struct::traits::foo::FooTrait is implemented for MyInt and MyString.
@@ -228,10 +206,11 @@ mod helpers {
 }
 
 fn main() {
+
     let benchmarks = [
         structs_bench::run,
         traits_bench::run,
-        generics_bench::run,
+        generics::bench::run,
         trait_objects_bench::run,
         function_pointers_bench::run,
         conditionally_compiled_bench::run,
