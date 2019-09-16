@@ -1,3 +1,5 @@
+use default::lib::Default;
+
 use crate::traits::foo::Foo;
 use crate::traits::foo::Bar;
 use crate::traits::foo::Baz;
@@ -26,6 +28,10 @@ impl Fat {
     fn yet_another_method(&self) -> String {
         format!("Fat: yet_another_method")
     }
+}
+
+impl Default for Fat {
+    // No need to implement anything actually as there are already default methods.
 }
 
 impl Foo for Fat {

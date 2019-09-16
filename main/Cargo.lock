@@ -8,6 +8,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "default"
+version = "0.1.0"
+
+[[package]]
 name = "dynamic"
 version = "0.1.0"
 dependencies = [
@@ -47,4 +51,7 @@ dependencies = [
 [[package]]
 name = "structs"
 version = "0.1.0"
+dependencies = [
+ "default 0.1.0",
+]
 

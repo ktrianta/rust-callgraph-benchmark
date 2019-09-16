@@ -33,7 +33,7 @@ Calls within package boundaries are also covered by most of the packages.
 - Crates:
     1 *library*
 - Depends on:
-    *nothing*
+    **default**
 - Description:
     Definitions and implementations of structs and traits. Static and instance
     method calls. Method lookup rules.
@@ -83,3 +83,14 @@ Calls within package boundaries are also covered by most of the packages.
     **structs**
 - Description:
     Function and method calls inside macros.
+
+### default
+ - Crates:
+    1 *library*
+ - Depends on:
+    *nothing*
+ - Description:
+    Default trait methods. These could be part of the 'traits' module of the
+    **structs** crate, but we choose to introduce them as part of another crate
+    on which **structs** depends. This artificial dependency is introduced to
+    include transitive crate dependencies in the benchmark.

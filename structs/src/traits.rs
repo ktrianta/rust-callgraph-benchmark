@@ -1,4 +1,6 @@
 pub mod foo {
+    use default::lib::Default;
+
     pub trait Foo {
         fn method(&self) -> String;
     }
@@ -9,7 +11,7 @@ pub mod foo {
         fn yet_another_method(&self) -> String;
     }
 
-    pub trait Baz {
+    pub trait Baz : Default {
         fn another_method(&self) -> String;
     }
 }
