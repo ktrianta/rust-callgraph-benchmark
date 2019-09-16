@@ -1,8 +1,6 @@
-use default::lib::Default;
-
-use crate::traits::foo::Foo;
-use crate::traits::foo::Bar;
-use crate::traits::foo::Baz;
+use traits::lib::FooTrait;
+use traits::lib::BarTrait;
+use traits::lib::BazTrait;
 
 pub struct Fat(pub u32);
 
@@ -30,18 +28,19 @@ impl Fat {
     }
 }
 
-impl Default for Fat {
-    // No need to implement anything actually as there are already default methods.
-}
+// TODO: fix
+//impl Default for Fat {
+//    // No need to implement anything actually as there are already default methods.
+//}
 
-impl Foo for Fat {
+impl FooTrait for Fat {
     fn method(&self) -> String {
         format!("Fat+Foo: uint32 {}", self.0)
     }
 
 }
 
-impl Bar for Fat {
+impl BarTrait for Fat {
     fn method(&self) -> String {
         format!("Fat+Bar: uint32 {}", self.0)
     }
@@ -55,7 +54,7 @@ impl Bar for Fat {
     }
 }
 
-impl Baz for Fat {
+impl BazTrait for Fat {
     fn another_method(&self) -> String {
         format!("Fat+Baz: another_method")    
     }

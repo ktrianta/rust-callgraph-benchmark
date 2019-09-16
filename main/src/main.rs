@@ -23,11 +23,11 @@ mod structs_bench {
 
 mod traits_bench {
     pub fn run() {
-        // Traits Foo, Bar and Baz are implemented by Fat.
-        // Baz is not imported in the current scope.
+        // Traits FooTrait, BarTrait and BazTrait are implemented by Fat.
+        // BazTrait is not imported in the current scope.
         use structs::lib::fat::Fat;
-        use structs::traits::foo::Foo;
-        use structs::traits::foo::Bar;
+        use traits::lib::FooTrait;
+        use traits::lib::BarTrait;
 
         let fat = Fat(100);
 
@@ -35,36 +35,36 @@ mod traits_bench {
         // fully resolved statically by the compiler. However, we include them for completeness of
         // our benchmark and to document several of the rules that govern method lookup.
 
-        // Method 'method(&self) -> String' is provided by Fat but also from Foo and Bar traits,
+        // Method 'method(&self) -> String' is provided by Fat but also from FooTrait and BarTrait,
         // which are implemented by Fat. However, method lookup considers Fat first according to
         // the rules at https://doc.rust-lang.org/reference/expressions/method-call-expr.html
         println!("{}", fat.method());  // equivalent to Fat::Method(&fat)
 
-        // For the next 2 method calls we use the Foo trait to make explicit which method we want
+        // For the next 2 method calls we use the FooTrait to make explicit which method we want
         // to be invoked on fat and circumvent the method lookup.
-        println!("{}", Foo::method(&fat));
-        println!("{}", <Fat as Foo>::method(&fat));
+        println!("{}", FooTrait::method(&fat));
+        println!("{}", <Fat as FooTrait>::method(&fat));
 
         // Method 'another_method(&self) -> String' is provided in the current scope only by trait
-        // Bar, as trait Baz is not in scope. Fat provides 'another_method(&mut self) -> String'.
+        // BarTrait, as BazTrait is not in scope. Fat provides 'another_method(&mut self) -> String'.
         // As stated in https://doc.rust-lang.org/reference/expressions/method-call-expr.html,
         // &self methods are looked up first, thus the trait method is found before the struct's &mut
         // self method is found.
-        println!("{}", fat.another_method());  // equivalent to Bar::another_method(&mut fat)
+        println!("{}", fat.another_method());  // equivalent to BarTrait::another_method(&mut fat)
 
-        // Method 'yet_another_method(&self) -> String' is provided by Fat and trait Bar. However,
-        // the call here is equivalent to 'Bar::yet_another_mathod(&fat)' as Fat has not made its
+        // Method 'yet_another_method(&self) -> String' is provided by Fat and BarTrait. However,
+        // this call is equivalent to 'BarTrait::yet_another_mathod(&fat)' as Fat has not made its
         // version publicly available by using the pub modifier, thus rendering it invisible here.
         println!("{}", fat.yet_another_method());
 
         {
-            use structs::traits::foo::Baz;
+            use traits::lib::BazTrait;
 
-            // Traits Bar and Baz are both in scope here, meaning it is ambiguous whose
+            // Traits BarTrait and BazTrait are both in scope here, meaning it is ambiguous whose
             // 'another_method' should be called if we write 'fat.another_method'. We use the traits
-            // as, e.g., '<Fat as Bar>', to refer to the desired method so there is no ambiguity.
-            println!("{}", <Fat as Bar>::another_method(&fat));
-            println!("{}", <Fat as Baz>::another_method(&fat));
+            // as, e.g., '<Fat as BarTrait>', to refer to the desired method so there is no ambiguity.
+            println!("{}", <Fat as BarTrait>::another_method(&fat));
+            println!("{}", <Fat as BazTrait>::another_method(&fat));
         }
     }
 }
@@ -93,13 +93,13 @@ mod generics_bench {
 
 mod trait_objects_bench {
     pub fn run() {
-        // struct::traits::foo::Foo is implemented for MyInt and MyString.
+        // struct::traits::foo::FooTrait is implemented for MyInt and MyString.
         use structs::lib::MyInt;
         use structs::lib::MyString;
-        use structs::traits::foo::Foo;
+        use traits::lib::FooTrait;
 
         // dynamic and dynamic_ufcs functions accept as argument a trait object
-        // of type structs::traits::foo::Foo and call a method with it as a receiver.
+        // of type traits::lib::FooTrait and call a method with it as a receiver.
         // Dynamic dispatch is used to resolve these calls.
         // dynamic_ufcs uses fully quilified syntax for the method call.
         use dynamic::lib::dynamic;
@@ -109,13 +109,13 @@ mod trait_objects_bench {
         let my_int = MyInt(10);
         let my_string = MyString("dummy".to_string());
 
-        println!("{}", dynamic(&my_int));                    // &my_int is coerced to &Foo
-        println!("{}", dynamic_ufcs(&my_int as &dyn Foo));   // &my_int is casted to &Foo
+        println!("{}", dynamic(&my_int));                        // &my_int is coerced to &FooTrait
+        println!("{}", dynamic_ufcs(&my_int as &dyn FooTrait));  // &my_int is casted to &FooTrait
 
-        println!("{}", dynamic(&my_string as &dyn Foo));     // &my_string is casted to &Foo
-        println!("{}", dynamic_ufcs(&my_string));            // &my_string is coerced to &Foo
+        println!("{}", dynamic(&my_string as &dyn FooTrait));    // &my_string is casted to &FooTrait
+        println!("{}", dynamic_ufcs(&my_string));                // &my_string is coerced to &FooTrait
 
-        // Casting to &Foo leads to slightly more MIR code to account for the casting.
+        // Casting to &FooTrait leads to slightly more MIR code to account for the casting.
         // The result should be the same but we include both for completeness.
     }
 }
@@ -123,8 +123,8 @@ mod trait_objects_bench {
 mod function_pointers_bench {
     use structs::lib::fat::Fat;
     use structs::lib::thin::Thin;
-    use structs::traits::foo::Foo;
-    use structs::traits::foo::Bar;
+    use traits::lib::FooTrait;
+    use traits::lib::BarTrait;
 
     use function_pointers::lib::FatMethod;
     use function_pointers::lib::FooMethod;
@@ -138,11 +138,11 @@ mod function_pointers_bench {
         println!("{}", fun(foo));
     }
 
-//    fn indirection_three(foo: impl Foo, fun: GenMethod<Foo>) {
+//    fn indirection_three(foo: impl FooTrait, fun: GenMethod<FooTrait>) {
 //        //println!("{}", fun(foo));
 //    }
 
-//    fn indirection_four(t: &Thin, fun: &dyn Fn(&Foo) -> String) {
+//    fn indirection_four(t: &Thin, fun: &dyn Fn(&FooTrait) -> String) {
 //        println!("{}", fun(t));
 //    }
 
@@ -150,14 +150,14 @@ mod function_pointers_bench {
         let f = Fat(10);
 
         indirection_one(&f, &Fat::method);
-        indirection_one(&f, &<Fat as Foo>::method);
+        indirection_one(&f, &<Fat as FooTrait>::method);
 
         indirection_two(&f, Fat::method);
-        indirection_two(&f, Foo::method);
-        indirection_two(&f, <Fat as Bar>::method);
+        indirection_two(&f, FooTrait::method);
+        indirection_two(&f, <Fat as BarTrait>::method);
 
         //fun(&f);
-        //indirection_three(f, Foo::method);
+        //indirection_three(f, FooTrait::method);
         //indirection_four(&Thin, &fun);
     }
 }
@@ -166,16 +166,16 @@ mod conditionally_compiled_bench {
     pub fn run() {
         use structs::lib::fat::Fat;
         use structs::lib::thin::Thin;
-        use structs::traits::foo::Foo;
-        use structs::traits::foo::Bar;
+        use traits::lib::FooTrait;
+        use traits::lib::BarTrait;
         use conditionally_compiled::lib::foo;
         use conditionally_compiled::lib::bar;
 
         let fat = Fat(100);
         let thin = Thin;
-        let foo_items: Vec<&dyn Foo> = vec![&fat, &thin];
-        let bar_items: Vec<&dyn Bar> = vec![&fat];   // does not contain 'thin'. The compiler
-                                                     // is aware that Bar is not implemented for Thin.
+        let foo_items: Vec<&dyn FooTrait> = vec![&fat, &thin];
+        let bar_items: Vec<&dyn BarTrait> = vec![&fat];  // Does not contain 'thin'. Compiler is aware
+                                                         // that BarTrait is not implemented for Thin.
 
         for item in foo_items.into_iter() {
             let result = foo(item);

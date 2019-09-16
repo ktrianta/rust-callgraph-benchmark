@@ -6,11 +6,11 @@ pub mod lib {
     macro_rules! foo {
         ( $( $x:expr ),* ) => {
             {
-                use structs::traits::foo::Foo;
+                use traits::lib::FooTrait;
 
                 let mut results = Vec::new();
                 $(
-                    results.push(Foo::method($x));
+                    results.push(FooTrait::method($x));
                 )*
                 results
             }

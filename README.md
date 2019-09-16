@@ -28,6 +28,15 @@ Calls within package boundaries are also covered by most of the packages.
     Main benchmark code. Calls all other benchmark libraries' functions and
     methods.
 
+### traits
+
+- Crates:
+    1 *library*
+- Depends on:
+    *nothing*
+- Description:
+    Trait definitions used by the different benchmark libraries.
+
 ### structs
 
 - Crates:
@@ -35,7 +44,7 @@ Calls within package boundaries are also covered by most of the packages.
 - Depends on:
     **default**
 - Description:
-    Definitions and implementations of structs and traits. Static and instance
+    Struct definitions and implementations. Static and instance
     method calls. Method lookup rules.
 
 ### generics

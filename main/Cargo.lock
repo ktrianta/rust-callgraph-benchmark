@@ -4,18 +4,14 @@
 name = "conditionally_compiled"
 version = "0.1.0"
 dependencies = [
- "structs 0.1.0",
+ "traits 0.1.0",
 ]
-
-[[package]]
-name = "default"
-version = "0.1.0"
 
 [[package]]
 name = "dynamic"
 version = "0.1.0"
 dependencies = [
- "structs 0.1.0",
+ "traits 0.1.0",
 ]
 
 [[package]]
@@ -23,6 +19,7 @@ name = "function_pointers"
 version = "0.1.0"
 dependencies = [
  "structs 0.1.0",
+ "traits 0.1.0",
 ]
 
 [[package]]
@@ -46,12 +43,17 @@ dependencies = [
  "generics 0.1.0",
  "macros 0.1.0",
  "structs 0.1.0",
+ "traits 0.1.0",
 ]
 
 [[package]]
 name = "structs"
 version = "0.1.0"
 dependencies = [
- "default 0.1.0",
+ "traits 0.1.0",
 ]
+
+[[package]]
+name = "traits"
+version = "0.1.0"
 

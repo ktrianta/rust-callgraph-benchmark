@@ -1,13 +1,11 @@
-pub use structs::traits::foo::Foo;
-
 pub mod lib {
-    use super::Foo;
+    use traits::lib::FooTrait;
 
-    pub fn dynamic(x: &dyn Foo) -> String {
+    pub fn dynamic(x: &dyn FooTrait) -> String {
         x.method()  // dynamic dispatch
     }
 
-    pub fn dynamic_ufcs(x: &dyn Foo) -> String {
-        Foo::method(x)  // fully qualified syntax dynamic dispatch
+    pub fn dynamic_ufcs(x: &dyn FooTrait) -> String {
+        FooTrait::method(x)  // fully qualified syntax dynamic dispatch
     }
 }
