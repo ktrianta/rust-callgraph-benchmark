@@ -12,7 +12,7 @@ bar = ["conditionally_compiled/bar"]
 
 [dependencies]
 generics  = { path = "../generics" }
-dynamic   = { path = "../dynamic" }
+dynamic_dispatch  = { path = "../dynamic_dispatch" }
 traits = { path = "../traits" }
 structs   = { path = "../structs" }
 function_pointers = { path = "../function_pointers" }

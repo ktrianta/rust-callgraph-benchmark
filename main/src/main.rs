@@ -94,34 +94,6 @@ mod traits_bench {
     }
 }
 
-mod trait_objects_bench {
-    pub fn run() {
-        // struct::traits::foo::FooTrait is implemented for MyInt and MyString.
-        use structs::lib::MyInt;
-        use structs::lib::MyString;
-        use traits::lib::FooTrait;
-
-        // dynamic and dynamic_ufcs functions accept as argument a trait object
-        // of type traits::lib::FooTrait and call a method with it as a receiver.
-        // Dynamic dispatch is used to resolve these calls.
-        // dynamic_ufcs uses fully quilified syntax for the method call.
-        use dynamic::lib::dynamic;
-        use dynamic::lib::dynamic_ufcs;
-
-
-        let my_int = MyInt(10);
-        let my_string = MyString("dummy".to_string());
-
-        println!("{}", dynamic(&my_int));                        // &my_int is coerced to &FooTrait
-        println!("{}", dynamic_ufcs(&my_int as &dyn FooTrait));  // &my_int is casted to &FooTrait
-
-        println!("{}", dynamic(&my_string as &dyn FooTrait));    // &my_string is casted to &FooTrait
-        println!("{}", dynamic_ufcs(&my_string));                // &my_string is coerced to &FooTrait
-
-        // Casting to &FooTrait leads to slightly more MIR code to account for the casting.
-        // The result should be the same but we include both for completeness.
-    }
-}
 
 mod function_pointers_bench {
     use structs::lib::fat::Fat;
@@ -236,7 +208,7 @@ fn main() {
         structs_bench::run,
         traits_bench::run,
         generics::bench::run,
-        trait_objects_bench::run,
+        dynamic_dispatch::bench::run,
         function_pointers_bench::run,
         conditionally_compiled_bench::run,
         macros_bench::run,

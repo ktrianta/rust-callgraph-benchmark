@@ -8,9 +8,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "dynamic"
+name = "dynamic_dispatch"
 version = "0.1.0"
 dependencies = [
+ "structs 0.1.0",
  "traits 0.1.0",
 ]
 
@@ -41,7 +42,7 @@ name = "main"
 version = "0.1.0"
 dependencies = [
  "conditionally_compiled 0.1.0",
- "dynamic 0.1.0",
+ "dynamic_dispatch 0.1.0",
  "function_pointers 0.1.0",
  "generics 0.1.0",
  "macros 0.1.0",
