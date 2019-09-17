@@ -1,22 +1,47 @@
 pub mod lib {
     pub mod fat;
     pub mod thin;
-    pub mod helloworld;
 
-    use traits::lib::FooTrait;
+    pub mod helloworld {
+        pub struct Hello;
 
-    pub struct MyInt(pub i32);
-    pub struct MyString(pub String);
+        impl Hello {
+            pub fn hi() -> String {
+                format!("Hi")
+            }
 
-    impl FooTrait for MyInt {
-        fn method(&self) -> String {
-            format!("MyInt+Foo: int32 {}", self.0)
+            pub fn hello(&self) -> String {
+                format!("Hello")
+            }
         }
-    }
 
-    impl FooTrait for MyString {
-        fn method(&self) -> String {
-            format!("MyString+Foo: string {}", self.0)
+        pub struct HelloWorld(String);
+
+        impl HelloWorld {
+            pub fn new(s: String) -> Self {
+                HelloWorld(s)
+            }
+
+            pub fn update(&mut self, s: String) {
+                self.0 = s;
+            }
+
+            pub fn greet(&self, hi: &String) -> String {
+                // Instance method call: std::string::ToString::to_string
+                format!("{} {} {}", hi, "world".to_string(), self.0)
+            }
+
+            pub fn greet_excited(&mut self, hi: &String) -> String {
+                // Inherent private method call: structs::lib::helloworld::HelloWorld::format
+                self.0 = self.format();
+
+                // Inherent public method call: structs::lib::helloworld::HelloWorld::greet
+                self.greet(hi)
+            }
+
+            fn format(&self) -> String {
+                format!("{}!", self.0)
+            }
         }
     }
 }
