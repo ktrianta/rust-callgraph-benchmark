@@ -5,24 +5,8 @@ impl Hello {
         format!("Hi")
     }
 
-    pub fn hey(&self) -> String {
-        format!("Hey")
-    }
-
     pub fn hello(&self) -> String {
         format!("Hello")
-    }
-}
-
-struct World;
-
-impl World {
-    pub fn world() -> String {
-        format!("World")
-    }
-
-    pub fn wooorld(&self) -> String {
-        format!("Woooooorld")
     }
 }
 
@@ -37,16 +21,17 @@ impl HelloWorld {
         self.0 = s;
     }
 
-    pub fn greet(&self, hi: String) -> String {
-        let world = World::world();                     // static call
-        format!("{} {}.", hi, world)
+    pub fn greet(&self, hi: &String) -> String {
+        // Instance method call: std::string::ToString::to_string
+        format!("{} {} {}", hi, "world".to_string(), self.0)
     }
 
-    pub fn greet_excited(&self, hi: String) -> String{
-        let w = World;
-        let world = w.wooorld();                        // method call
-        let formatted = self.format();                  // private inherent method call
-        format!("{} {}{}", hi, world, formatted)
+    pub fn greet_excited(&mut self, hi: &String) -> String {
+        // Inherent private method call: structs::lib::helloworld::HelloWorld::format
+        self.0 = self.format();
+
+        // Inherent public method call: structs::lib::helloworld::HelloWorld::greet
+        self.greet(hi)
     }
 
     fn format(&self) -> String {
