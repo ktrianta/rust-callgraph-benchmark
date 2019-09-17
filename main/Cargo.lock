@@ -46,6 +46,15 @@ dependencies = [
  "function_pointers 0.1.0",
  "generics 0.1.0",
  "macros 0.1.0",
+ "static_dispatch 0.1.0",
+ "structs 0.1.0",
+ "traits 0.1.0",
+]
+
+[[package]]
+name = "static_dispatch"
+version = "0.1.0"
+dependencies = [
  "structs 0.1.0",
  "traits 0.1.0",
 ]

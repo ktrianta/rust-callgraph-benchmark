@@ -11,10 +11,11 @@ foo = ["conditionally_compiled/foo"]
 bar = ["conditionally_compiled/bar"]
 
 [dependencies]
-generics  = { path = "../generics" }
-dynamic_dispatch  = { path = "../dynamic_dispatch" }
-traits = { path = "../traits" }
-structs   = { path = "../structs" }
-function_pointers = { path = "../function_pointers" }
 conditionally_compiled = { path = "../conditionally_compiled" }
+dynamic_dispatch  = { path = "../dynamic_dispatch" }
+function_pointers = { path = "../function_pointers" }
+generics  = { path = "../generics" }
 macros = { path = "../macros" }
+static_dispatch = { path = "../static_dispatch" }
+structs   = { path = "../structs" }
+traits = { path = "../traits" }
