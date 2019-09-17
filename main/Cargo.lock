@@ -4,6 +4,7 @@
 name = "conditionally_compiled"
 version = "0.1.0"
 dependencies = [
+ "structs 0.1.0",
  "traits 0.1.0",
 ]
 
@@ -35,6 +36,7 @@ name = "macros"
 version = "0.1.0"
 dependencies = [
  "structs 0.1.0",
+ "traits 0.1.0",
 ]
 
 [[package]]

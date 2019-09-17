@@ -17,3 +17,19 @@ pub mod lib {
         };
     }
 }
+
+pub mod bench {
+    pub fn run() {
+        use crate::foo;
+        use structs::lib::fat::Fat;
+        use structs::lib::thin::Thin;
+
+        let fat = Fat(1000);
+        let thin = Thin;
+        let results = foo![&fat, &thin];
+
+        for result in results.iter() {
+            println!("{}", result);
+        }
+    }
+}

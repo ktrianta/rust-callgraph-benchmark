@@ -43,3 +43,40 @@ pub mod lib {
     }
 
 }
+
+pub mod bench {
+    pub fn run() {
+        use structs::lib::fat::Fat;
+        use structs::lib::thin::Thin;
+        use traits::lib::FooTrait;
+        use traits::lib::BarTrait;
+        use crate::lib::foo;
+        use crate::lib::bar;
+
+        let fat = Fat(100);
+        let thin = Thin;
+        let foo_items: Vec<&dyn FooTrait> = vec![&fat, &thin];
+        let bar_items: Vec<&dyn BarTrait> = vec![&fat];  // Does not contain 'thin'. Compiler is aware
+                                                         // that BarTrait is not implemented for Thin.
+
+        for item in foo_items.into_iter() {
+            let result = foo(item);
+
+            // Function foo is conditionally compiled on feature 'foo'.
+            // If 'foo' is not defined the returned value is the empty String.
+            if !result.is_empty() {
+                println!("{}", result);
+            }
+        }
+
+        for item in bar_items.into_iter() {
+            let result = bar(item);
+
+            // Function bar is conditionally compiled on feature 'bar'.
+            // If 'bar' is not defined the returned value is the empty String.
+            if !result.is_empty() {
+                println!("{}", result);
+            }
+        }
+    }
+}

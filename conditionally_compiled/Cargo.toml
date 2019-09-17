@@ -11,4 +11,5 @@ foo = []
 bar = []
 
 [dependencies]
+structs = { path = "../structs" }
 traits = { path = "../traits" }
