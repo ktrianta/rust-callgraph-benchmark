@@ -41,25 +41,27 @@ Calls within package boundaries are also covered by most of the packages.
     Struct definitions. Struct and trait implementations.
 - Call examples:
 ```rust
-impl HelloWorld {
-    pub fn greet(&self, hi: &String) -> String {
-        // instance method call (trait)
-        // std::string::ToString::to_string
-        format!("{} {} {}", hi, "world".to_string(), self.0)
+pub struct Two(i32);
+
+impl Two {
+    pub fn method_1(&self) -> i32 {
+        self.0 + 1
     }
 
-    pub fn greet_excited(&mut self, hi: &String) -> String {
-        // instance method call (inherent private)
-        // structs::lib::helloworld::HelloWorld::format
-        self.0 = self.format();
+    pub fn method_2(&mut self) -> i32 {
+        // instance method call (inherent)
+        // structs::lib::Two::add_one
+        // Call to inherent private method inside another method.
+        self.add_one();
 
         // instance method call (inherent)
-        // structs::lib::helloworld::HelloWorld::greet
-        self.greet(hi)
+        // structs::lib::Two::method_1
+        // Call to inherent public method inside another method.
+        self.method_1()
     }
 
-    fn format(&self) -> String {
-        format!("{}!", self.0)
+    fn add_one(&mut self) {
+        self.0 = self.0 + 1;
     }
 }
 ```
