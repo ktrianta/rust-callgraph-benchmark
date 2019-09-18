@@ -3,12 +3,12 @@ pub mod lib {
 
     // dynamic* functions accept as argument a trait object of type traits::lib::FooTrait and
     // call 'method' on it. Dynamic dispatch is used to resolve these method calls.
-    pub fn dynamic(x: &dyn FooTrait) -> String {
+    pub fn dynamic(x: &dyn FooTrait) -> u32 {
         // Dynamic dispatch: traits::lib::FooTrait::method
         x.method()
     }
 
-    pub fn dynamic_ufcs(x: &dyn FooTrait) -> String {
+    pub fn dynamic_ufcs(x: &dyn FooTrait) -> u32 {
         // Fully qualified syntax dynamic dispatch: traits::lib::FooTrait::method
         FooTrait::method(x)
     }

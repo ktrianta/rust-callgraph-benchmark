@@ -2,46 +2,43 @@ pub mod lib {
     pub mod fat;
     pub mod thin;
 
-    pub mod helloworld {
-        pub struct Hello;
+    pub struct One;
 
-        impl Hello {
-            pub fn hi() -> String {
-                format!("Hi")
-            }
-
-            pub fn hello(&self) -> String {
-                format!("Hello")
-            }
+    impl One {
+        pub fn method_1() -> i32 {
+            1
         }
 
-        pub struct HelloWorld(String);
+        pub fn method_2(&mut self) -> i32 {
+            2
+        }
+    }
 
-        impl HelloWorld {
-            pub fn new(s: String) -> Self {
-                HelloWorld(s)
-            }
+    pub struct Two(i32);
 
-            pub fn update(&mut self, s: String) {
-                self.0 = s;
-            }
+    impl Two {
+        pub fn new(num: i32) -> Self {
+            Two(num)
+        }
 
-            pub fn greet(&self, hi: &String) -> String {
-                // Instance method call: std::string::ToString::to_string
-                format!("{} {} {}", hi, "world".to_string(), self.0)
-            }
+        pub fn method_1(&self) -> i32 {
+            self.0 + 1
+        }
 
-            pub fn greet_excited(&mut self, hi: &String) -> String {
-                // Inherent private method call: structs::lib::helloworld::HelloWorld::format
-                self.0 = self.format();
+        pub fn method_2(&mut self) -> i32 {
+            // instance method call (inherent)
+            // structs::lib::Two::add_one
+            // Call to inherent private method inside another method.
+            self.add_one();
 
-                // Inherent public method call: structs::lib::helloworld::HelloWorld::greet
-                self.greet(hi)
-            }
+            // instance method call (inherent)
+            // structs::lib::Two::method_1
+            // Call to inherent public method inside another method.
+            self.method_1()
+        }
 
-            fn format(&self) -> String {
-                format!("{}!", self.0)
-            }
+        fn add_one(&mut self) {
+            self.0 = self.0 + 1;
         }
     }
 }

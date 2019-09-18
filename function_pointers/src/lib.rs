@@ -3,10 +3,10 @@ pub mod lib {
     use traits::lib::FooTrait;
     use traits::lib::BarTrait;
 
-    pub type FatMethod = fn(&Fat) -> String;
-    pub type FooMethod = fn(&FooTrait) -> String;
-    pub type BarMethod = fn(&BarTrait) -> String;
-    pub type GenMethod<T:FooTrait> = fn(T) -> String;
+    pub type FatMethod = fn(&Fat) -> u32;
+    pub type FooMethod = fn(&FooTrait) -> u32;
+    pub type BarMethod = fn(&BarTrait) -> u32;
+    pub type GenMethod<T:FooTrait> = fn(T) -> u32;
     
     fn test(b: impl BarTrait) {
 
@@ -23,7 +23,7 @@ pub mod bench {
     use crate::lib::FooMethod;
     use crate::lib::GenMethod;
 
-    fn indirection_one(foo: &Fat, fun: &dyn Fn(&Fat) -> String) {
+    fn indirection_one(foo: &Fat, fun: &dyn Fn(&Fat) -> u32) {
         println!("{}", fun(foo));
     }
 

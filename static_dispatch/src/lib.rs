@@ -1,44 +1,49 @@
 pub mod bench {
     pub fn run() {
-        use structs::lib::helloworld::Hello;
-        use structs::lib::helloworld::HelloWorld;
+        use structs::lib::One;
+        use structs::lib::Two;
 
-        // Static method call: structs::lib::helloworld::Hello::hi
-        let hi = Hello::hi();
+        // static method call (inherent)
+        // structs::lib::One::method_1
+        let num1 = One::method_1();
 
-        // Instance method call: structs::lib::helloworld::Hello::hello
-        let hey = Hello.hello();
+        // instance method call (inherent)
+        // structs::lib::One::method_2
+        let mut one = One;
+        let num2 = one.method_2();
 
-        let hello_instance = Hello;
+        // instance method call (inherent)
+        // structs::lib::One::method_2
+        // Generates slightly different mir code than 'one.method_2()'.
+        let num3 = One.method_2();
 
-        // Instance method call: structs::lib::helloworld::Hello::hello
-        let hello = hello_instance.hello();
+        // static method call (inherent)
+        // structs::lib::Two::new
+        // Returns the Self type.
+        let mut two = Two::new(0);
 
-        // Instance method call with fully qualified syntax: std::string::ToString::to_string
-        let excitement = ToString::to_string("!");
+        // instance method call (inherent)
+        // structs::lib::Two::method_1
+        // Same name as structs::lib::One::method_1 but different signature and definition path.
+        let num4 = two.method_1();
 
-        // Instance method call: std::string::ToString::to_string
-        let more_excitement = "!!".to_string();
+        // instance method call (inherent)
+        // structs::lib::Two::method_2
+        // Same name and signature as structs::lib::One::method_2 but different definition path.
+        let num5 = two.method_2();
 
-        // Static method call: structs::lib::helloworld::HelloWorld::new
-        let mut hw = HelloWorld::new(excitement);
-
-        // Instance method call multiple arguments: structs::lib::helloworld::HelloWorld::greet
-        hw.greet(&hi);
-
-        // Instance method call with &mut self: structs::lib::helloworld::HelloWorld::update
-        hw.update(hey + &more_excitement);
-
-        // Instance method call with &mut self and multiple arguments:
-        // structs::lib::helloworld::HelloWorld::greet_excited
-        println!("{}", hw.greet_excited(&hello));
+        // This is here to ensure that the above calls are not optimized away as dead code.
+        println!(
+            "Just making sure no code is deemed dead by the compiler: {}",
+            num1 + num2 + num3 + num4 + num5
+        );
     }
 }
 
 pub mod bench_method_lookup {
     pub fn run() {
         // Traits FooTrait, BarTrait and BazTrait are implemented by Fat.
-        // BazTrait is not imported in the current scope.
+        // BazTrait is not imported in the current scope and thus is not visible.
         use structs::lib::fat::Fat;
         use traits::lib::FooTrait;
         use traits::lib::BarTrait;
@@ -49,47 +54,56 @@ pub mod bench_method_lookup {
         // resolved statically by the compiler. However, we include them for completeness of our
         // benchmark and to document several of the rules that govern method lookup.
 
-        // Method 'method(&self) -> String' is provided by Fat but also from FooTrait and BarTrait,
-        // which are implemented by Fat. Method lookup considers Fat first according to the rules
-        // at https://doc.rust-lang.org/reference/expressions/method-call-expr.html.
-        //
-        // Instance method call: structs::lib::fat::Fat::method
-        println!("{}", fat.method());
+        // instance method call (inherent)
+        // structs::lib::fat::Fat::method
+        // Method lookup should resolve this call to the method defined in the implementation of
+        // the Fat struct and not to the methods defined in the implementations of FooTrait or
+        // BarTrait by Fat (https://doc.rust-lang.org/reference/expressions/method-call-expr.html).
+        let num1 = fat.method();
 
-        // For the next 2 method calls we use fully qualified syntax to circumvent method lookup.
-        //
-        // Instance method call: structs::lib::fat::{impl FooTrait for Fat}::method
-        println!("{}", FooTrait::method(&fat));
+        // instance method call (trait)
+        // structs::lib::fat::{impl FooTrait for Fat}::method
+        // Fully qualified syntax call circumvents method lookup.
+        let num2 = FooTrait::method(&fat);
 
-        // Instance method call: structs::lib::fat::{impl BarTrait for Fat}::method
-        println!("{}", <Fat as BarTrait>::method(&fat));
+        // instance method call (trait)
+        // structs::lib::fat::{impl BarTrait for Fat}::method
+        // Fully qualified syntax `<T as TraitRef>::item` circumvents method lookup.
+        let num3 = <Fat as BarTrait>::method(&fat);
 
-        // Method 'another_method(&self) -> String' is provided in the current scope only by trait
-        // BarTrait, as BazTrait is not in scope. Fat provides 'another_method(&mut self) -> String'
-        // but as stated in https://doc.rust-lang.org/reference/expressions/method-call-expr.html,
-        // &self methods are looked up first, thus the BarTrait method is selected.
-        //
-        // Instance method call: structs::lib::fat::{impl BarTrait for Fat}::another_method
-        println!("{}", fat.another_method());
+        // instance method call (trait)
+        // structs::lib::fat::{impl BarTrait for Fat}::another_method
+        // BazTrait is not in scope and Fat provides 'another_method(&mut self) -> u32', but as
+        // stated in https://doc.rust-lang.org/reference/expressions/method-call-expr.html, &self
+        // methods are looked up first, thus the call is resolved to BarTrait's method.
+        let num4 = fat.another_method();
 
-        // Method 'yet_another_method(&self) -> String' is provided by Fat and BarTrait. However,
-        // Fat does not make it publicly available by using the pub modifier.
-        //
-        // Instance method call: structs::lib::fat::{impl BarTrait for Fat}::yet_another_method
-        println!("{}", fat.yet_another_method());
+        // instance method call (trait)
+        // structs::lib::fat::{impl BarTrait for Fat}::yet_another_method
+        // Method structs::lib::fat::Fat::yet_another_method is not public, thus the call to
+        // yet_another_method is resolved to that of BarTrait's implementation by Fat.
+        let num5 = fat.yet_another_method();
 
         {
             use traits::lib::BazTrait;
 
-            // Traits BarTrait and BazTrait are both in scope, meaning we should disambiguate a call
-            // whose receiver is of type Fat. We are able to do this as, e.g., '<Fat as BarTrait>',
-            // to refer to the desired method so there is no ambiguity.
-            //
-            // Instance method call: structs::lib::fat::{impl BarTrait for Fat}::another_method
-            println!("{}", <Fat as BarTrait>::another_method(&fat));
+            // Fully qualified syntax is required to disambiguate a call to another_method as both
+            // structs::lib::fat::{impl BarTrait for Fat}::another_method and
+            // structs::lib::fat::{impl BazTrait for Fat}::another_method are in scope now.
 
-            // Instance method call: structs::lib::fat::{impl BazTrait for Fat}::another_method
-            println!("{}", <Fat as BazTrait>::another_method(&fat));
+            // instance method call (trait)
+            // structs::lib::fat::{impl BarTrait for Fat}::another_method
+            let num6 = <Fat as BarTrait>::another_method(&fat);
+
+            // instance method call (trait)
+            // structs::lib::fat::{impl BazTrait for Fat}::another_method
+            let num7 = <Fat as BazTrait>::another_method(&fat);
+
+            // This is here to ensure that the above calls are not optimized away as dead code.
+            println!(
+                "Just making sure no code is deemed dead by the compiler: {}",
+                num1 + num2 + num3 + num4 + num5 + num6 + num7
+            );
         }
     }
 }
