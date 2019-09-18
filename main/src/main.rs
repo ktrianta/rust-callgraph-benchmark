@@ -1,13 +1,14 @@
-
 mod helpers {
     // Accepts a function pointer as its argument and calls the function it points to.
     pub fn run_benchmark(bench: &fn () -> ()) {
-        // There is a dedicated function pointers benchmark but it does not hurt to
-        // check again here. This is a part of the benchmark after all.
+        // There is a dedicated function pointers benchmark. However, it does not hurt to test the
+        // call-graph generator again at this point. This is part of the benchmark after all.
+
+        // TODO: Define which functions should be included in a call-graph for the call to 'bench'.
+        // All the functions with matching signatures that are available at this scope and are
+        // declared in the current crate or one of its dependencies.
         bench();
 
-        // TODO: Define which functions should be considered by a call-graph generator
-        // for the above call.
     }
 }
 
