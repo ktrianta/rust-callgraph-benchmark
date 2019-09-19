@@ -56,9 +56,9 @@ pub mod bench_method_lookup {
 
         // instance method call (inherent)
         // structs::lib::fat::Fat::method
-        // Method lookup should resolve this call to the method defined in the implementation of
-        // the Fat struct and not to the methods defined in the implementations of FooTrait or
-        // BarTrait by Fat (https://doc.rust-lang.org/reference/expressions/method-call-expr.html).
+        // Method lookup should resolve this call to structs::lib::fat::Fat::method and not to the
+        // methods defined in the implementations of FooTrait or BarTrait by Fat as described in
+        // https://doc.rust-lang.org/reference/expressions/method-call-expr.html.
         let num1 = fat.method();
 
         // instance method call (trait)
