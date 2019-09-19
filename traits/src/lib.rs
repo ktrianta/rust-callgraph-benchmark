@@ -13,14 +13,13 @@ pub mod lib {
         fn another_method(&self) -> u32;
     }
 
-    // TODO: fix
     pub trait GenericFooTrait<T> {
-        fn method<K>(&self, _: T, _: K) -> u32;
+        fn method(&self) -> T;
     }
 
     pub mod bounds {
         pub trait BoundTrait {
-            fn sub(&self) -> i32;
+            fn method(&self) -> i32;
         }
     }
 }
