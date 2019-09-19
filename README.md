@@ -150,6 +150,51 @@ fat.yet_another_method();
     Trait objects and dynamic dispatch.
 - Call examples:
 ```rust
+use traits::lib::FooTrait;
+
+// 'dynamic*' functions accept as argument a trait object of type traits::lib::FooTrait and
+// call 'method' on it. Dynamic dispatch is used to resolve these method calls.
+fn dynamic(x: &dyn FooTrait) -> u32 {
+    // instance method call (trait)
+    // traits::lib::FooTrait::method
+    // Dynamic dispatch.
+    x.method()
+}
+
+fn dynamic_ufcs(x: &dyn FooTrait) -> u32 {
+    // instance method call (trait)
+    // traits::lib::FooTrait::method
+    // Dynamic dispatch with fully qualified syntax.
+    FooTrait::method(x)
+}
+
+fn test() {
+    use structs::lib::fat::Fat;
+    use structs::lib::thin::Thin;
+
+    let fat = Fat(10);
+
+    // static function call
+    // dynamic_dispatch::lib::dynamic
+    // The dynamic dispatch call happens inside function 'dynamic'.
+    dynamic(&fat);  // &my_int is coerced to &FooTrait
+
+    // static function call
+    // dynamic_dispatch::lib::dynamic_ufcs
+    // Casting to &dyn FooTrait generates slightly more MIR code to account for the cast
+    // operation. We include it along the coercion version for completeness.
+    dynamic_ufcs(&fat as &dyn FooTrait);  // &my_int is casted to &FooTrait
+
+    let thin = Thin;
+    let vec: Vec<&dyn FooTrait> = vec![&fat, &thin];
+
+    for item in vec.iter() {
+        // instance method call (trait)
+        // traits::lib::FooTrait::method
+        // Dynamic dispatch on referenced vector elements.
+        item.method();
+    }
+}
 ```
 
 ### generics
