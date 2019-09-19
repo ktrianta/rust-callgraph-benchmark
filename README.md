@@ -145,7 +145,7 @@ fat.yet_another_method();
 - Crates:
     1 library
 - Depends on:
-    **structs**
+    **structs**, **traits**
 - Description:
     Trait objects and dynamic dispatch.
 - Call examples:
@@ -201,7 +201,7 @@ fn test() {
 - Crates:
     1 library
 - Depends on:
-    *nothing*
+    **structs**, **traits**
 - Description:
     Generic functions with trait bounds. At compile time, this generic code
     is monomorphized.
