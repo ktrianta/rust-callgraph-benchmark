@@ -39,13 +39,13 @@ pub mod bench {
         // static function call
         // dynamic_dispatch::lib::dynamic
         // The dynamic dispatch call happens inside function 'dynamic'.
-        dynamic(&fat);  // &my_int is coerced to &FooTrait
+        dynamic(&fat);  // &fat is coerced to &FooTrait
 
         // static function call
         // dynamic_dispatch::lib::dynamic_ufcs
         // Casting to &dyn FooTrait generates slightly more MIR code to account for the cast
         // operation. We include it along the coercion version for completeness.
-        dynamic_ufcs(&fat as &dyn FooTrait);  // &my_int is casted to &FooTrait
+        dynamic_ufcs(&fat as &dyn FooTrait);  // &fat is casted to &FooTrait
 
         // NOTE: In the above two calls a precise Pointer Analysis would be able to compute that
         // only objects of type Fat are passed to function 'dynamic' and 'dynamic_ufcs' under the
