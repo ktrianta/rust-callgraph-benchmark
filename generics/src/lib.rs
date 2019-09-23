@@ -27,21 +27,33 @@ pub mod lib {
 
     // Generic function bounded by ForeignBoundTrait (traits::lib::bounds::BoundTrait).
     // ForeignBoundTrait is implemented by generics::base::One and generics::base::Two.
-    pub fn other_monomorphized<T: ForeignBoundTrait>(arg: T) -> i32 {
+    pub fn monomorphized_foreign_bound<T: ForeignBoundTrait>(arg: T) -> i32 {
         // instance method call (trait)
         // <T as traits::lib::bounds::BoundTrait>::method
-        // The call is similar to that of 'monomorphized' but the trait that bounds type parameter
+        // This call is similar to that of 'monomorphized' but the trait that bounds type parameter
         // T is defined in a different package than the function and the structs implementing it.
         arg.method()
     }
 
+    pub fn impl_trait(arg: impl ForeignBoundTrait) -> i32 {
+        // instance method call (trait)
+        // <impl traits::lib::bound::BoundTrait as traits::lib::bounds::BoundTrait>::method
+        // This call is equivalent to that of 'monomorphized_foreign_bound' as the compiler
+        // produces the same ASM for both. However, produced MIR for the call differs slightly.
+        arg.method()
+    }
+
+    // Generic function bounded by generic trait GenericFooTrait<T> (traits::lib::GenericFooTrait),
+    // which is concretized by i32.
     pub fn monomorphized_i32<T: GenericFooTrait<i32>>(arg: T) -> i32 {
         // instance method call (trait)
         // <T as traits::lib::GenericFooTrait<i32>>::method
         arg.method()
     }
 
-    pub fn monomorphized_p<T, P>(arg: T) -> P
+    // Generic function bounded by generic trait GenericFooTrait<T> (traits::lib::GenericFooTrait)
+    // using also a where clause.
+    pub fn monomorphized_where<T, P>(arg: T) -> P
         where T: GenericFooTrait<P>
     {
         // instance method call (trait)
@@ -54,10 +66,11 @@ pub mod bench {
     use crate::base::One;
     use crate::base::Two;
     use crate::base::Wrapper;
+    use crate::lib::impl_trait;
     use crate::lib::monomorphized;
     use crate::lib::monomorphized_i32;
-    use crate::lib::monomorphized_p;
-    use crate::lib::other_monomorphized;
+    use crate::lib::monomorphized_where;
+    use crate::lib::monomorphized_foreign_bound;
     use structs::lib::One as ForeignOne;
     use traits::lib::GenericFooTrait;
 
@@ -70,40 +83,55 @@ pub mod bench {
     pub fn run() {
 
         // No dynamic dispatch should be needed to resolve calls inside 'monomorphized' and
-        // 'other_monomorphized' as the compiler monomorphizes it during code generation.
+        // 'monomorphized_foreign_bound' as the compiler monomorphizes it during code generation.
 
         // static function call (monomorphized)
         // generics::lib::monomorphized::<structs::lib::One>
         let num1 = monomorphized(ForeignOne);
 
         // static function call (monomorphized)
-        // generics::lib::other_monomorphized::<generics::base::One>
-        let num2 = other_monomorphized(One);
+        // generics::lib::monomorphized_foreign_bound::<generics::base::One>
+        let num2 = monomorphized_foreign_bound(One);
 
         // static function call (monomorphized)
-        // generics::lib::other_monomorphized::<generics::base::Two>
-        let num3 = other_monomorphized(Two);
+        // generics::lib::monomorphized_foreign_bound::<generics::base::Two>
+        // Call with both types, generics::base::One and generics::base::Two, that implement
+        // traits::lib::bounds::BoundTrait.
+        let num3 = monomorphized_foreign_bound(Two);
+
+        // static function call (monomorphized)
+        // generics::lib::monomorphized_foreign_bound::<generics::base::Two>
+        // Explicitly choose the conrete type as 'Two'.
+        let num4 = monomorphized_foreign_bound::<Two>(Two);
+
+        // static function call (monomorphized)
+        // generics::lib::impl_trait::<generics::base::One>
+        let num5 = impl_trait(One);
 
         // static function call (monomorphized)
         // generics::lib::monomorphized_i32::<generics::base::Two>
-        let num4 = monomorphized_i32(Two);
+        let num6 = monomorphized_i32(Two);
 
         // static function call (monomorphized)
-        // generics::lib::monomorphized_P::<generics::base::Two>
-        let num5 = monomorphized_p(Two);
+        // generics::lib::monomorphized_where::<generics::base::Two>
+        // Call of function with generic parameter type T bounded by GenericFooTrait<P> and
+        // concrete parameter type generics::base::Two which implements GenericFooTrait<i32>.
+        let num7 = monomorphized_where(Two);
 
         // static method call (inherent monomorphized)
         // generics::base::Wrapper::new::<structs::lib::One>
+        // Static method call implemented on generic struct Wrapper<T>
         let wrapper = Wrapper::<ForeignOne>::new(ForeignOne);
 
         // instance method call (inherent)
         // generics::base::Wrapper::method_wrapper::<structs::lib::One>
-        let num6 = wrapper.method_wrapper();
+        // Instance method call implemented on generic struct Wrapper<T>
+        let num8 = wrapper.method_wrapper();
 
         // This is here to ensure that the above calls are not optimized away as dead code.
         println!(
             "Just making sure no code is deemed dead by the compiler: {}",
-            num1 + num2 + num3 + num4 + num5 + num6
+            num1 + num2 + num3 + num4 + num5 + num6 + num7 + num8
         );
     }
 }
