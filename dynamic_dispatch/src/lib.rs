@@ -54,20 +54,20 @@ pub mod bench {
         // static function call
         // dynamic_dispatch::lib::dynamic
         // The dynamic dispatch call happens inside function 'dynamic'.
-        dynamic(&fat);  // &fat is coerced to &FooTrait
+        let num1 = dynamic(&fat);  // &fat is coerced to &FooTrait
 
         // static function call
         // dynamic_dispatch::lib::dynamic_ufcs
         // Casting to &dyn FooTrait generates slightly more MIR code to account for the cast
         // operation. We include it along the coercion version for completeness.
-        dynamic_ufcs(&fat as &dyn FooTrait);  // &fat is casted to &FooTrait
+        let num2 = dynamic_ufcs(&fat as &dyn FooTrait);  // &fat is casted to &FooTrait
 
         // static function call
         // dynamic_dispatch::lib::dynamic_generic
         // Casting to the concrete type of generic trait GenericFooTrait for disambiguation, as
         // Thin implements both GenericFooTrait<i32> and GenericFooTrait<u32>, which match generic
         // type parameter GenericFooTrait<T>.
-        dynamic_generic(&thin as &dyn GenericFooTrait<i32>);
+        let num3 = dynamic_generic(&thin as &dyn GenericFooTrait<u32>);
 
         // NOTE: In the above calls a precise Pointer Analysis would be able to compute that only
         // objects of type Fat are passed to function 'dynamic' and 'dynamic_ufcs' under the
@@ -77,12 +77,19 @@ pub mod bench {
         // be different in these cases.
 
         let vec: Vec<&dyn FooTrait> = vec![&fat, &thin];
+        let mut num4 = 0;
 
         for item in vec.iter() {
             // instance method call (trait)
             // traits::lib::FooTrait::method
             // Dynamic dispatch on referenced vector elements.
-            item.method();
+            num4 += item.method();
         }
+
+        // This is here to ensure that the above calls are not optimized away as dead code.
+        println!(
+            "Just making sure no code is deemed dead by the compiler: {}",
+            num1 + num2 + num3 + num4
+        );
     }
 }
