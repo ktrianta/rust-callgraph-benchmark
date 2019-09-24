@@ -8,9 +8,11 @@
 
 pub mod lib {
     use traits::lib::FooTrait;
+    use traits::lib::GenericFooTrait;
 
-    // 'dynamic*' functions accept as argument a trait object of type traits::lib::FooTrait and
-    // call 'method' on it. Dynamic dispatch is used to resolve these method calls.
+    // 'dynamic' and 'dynamic_ufcs' functions accept as argument a trait object of type
+    // traits::lib::FooTrait and call 'method' on it. Dynamic dispatch is used to resolve these
+    // method calls.
     pub fn dynamic(x: &dyn FooTrait) -> u32 {
         // instance method call (trait)
         // traits::lib::FooTrait::method
@@ -24,17 +26,30 @@ pub mod lib {
         // Dynamic dispatch with fully qualified syntax.
         FooTrait::method(x)
     }
+
+    // 'dynamic_generic' function accepts as argument a generic trait object of type
+    // traits::lib::GenericFooTrait<T> and calls 'method' on it. Dynamic dispatch is used to
+    // resolve this method calls.
+    pub fn dynamic_generic<T>(x: &dyn GenericFooTrait<T>) -> T {
+        // instance method call (trait)
+        // traits::lib::FooTrait::method
+        // Dynamic dispatch with fully qualified syntax.
+        GenericFooTrait::<T>::method(x)
+    }
 }
 
 pub mod bench {
     pub fn run() {
         use crate::lib::dynamic;
         use crate::lib::dynamic_ufcs;
+        use crate::lib::dynamic_generic;
         use structs::lib::fat::Fat;
         use structs::lib::thin::Thin;
         use traits::lib::FooTrait;
+        use traits::lib::GenericFooTrait;
 
         let fat = Fat(10);
+        let thin = Thin;
 
         // static function call
         // dynamic_dispatch::lib::dynamic
@@ -47,13 +62,20 @@ pub mod bench {
         // operation. We include it along the coercion version for completeness.
         dynamic_ufcs(&fat as &dyn FooTrait);  // &fat is casted to &FooTrait
 
-        // NOTE: In the above two calls a precise Pointer Analysis would be able to compute that
-        // only objects of type Fat are passed to function 'dynamic' and 'dynamic_ufcs' under the
-        // specific context. In contrast a more imprecise analysis like Class Hierarchy Analysis
-        // should assume that objects of all allowed types could be passed as arguments. The
-        // generated call-graph would be different in these cases.
+        // static function call
+        // dynamic_dispatch::lib::dynamic_generic
+        // Casting to the concrete type of generic trait GenericFooTrait for disambiguation, as
+        // Thin implements both GenericFooTrait<i32> and GenericFooTrait<u32>, which match generic
+        // type parameter GenericFooTrait<T>.
+        dynamic_generic(&thin as &dyn GenericFooTrait<i32>);
 
-        let thin = Thin;
+        // NOTE: In the above calls a precise Pointer Analysis would be able to compute that only
+        // objects of type Fat are passed to function 'dynamic' and 'dynamic_ufcs' under the
+        // specific context, whereas an object of type Thin is passed to function 'dynamic_generic'.
+        // In contrast a more imprecise analysis like Class Hierarchy Analysis should assume that
+        // objects of all allowed types could be passed as arguments. The generated call-graph would
+        // be different in these cases.
+
         let vec: Vec<&dyn FooTrait> = vec![&fat, &thin];
 
         for item in vec.iter() {
