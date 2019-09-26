@@ -5,9 +5,17 @@ name = "function_pointers"
 version = "0.1.0"
 dependencies = [
  "structs 0.1.0",
+ "traits 0.1.0",
 ]
 
 [[package]]
 name = "structs"
+version = "0.1.0"
+dependencies = [
+ "traits 0.1.0",
+]
+
+[[package]]
+name = "traits"
 version = "0.1.0"
 
