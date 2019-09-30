@@ -32,7 +32,7 @@ pub mod lib {
     // resolve this method calls.
     pub fn dynamic_generic<T>(x: &dyn GenericFooTrait<T>) -> T {
         // instance method call (trait)
-        // traits::lib::FooTrait::method
+        // traits::lib::GenericTrait<T>::method
         // Dynamic dispatch with fully qualified syntax.
         GenericFooTrait::<T>::method(x)
     }
