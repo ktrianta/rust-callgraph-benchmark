@@ -21,7 +21,7 @@ pub mod lib {
     // BoundTrait is implemented by structs::lib::One.
     pub fn monomorphized<T: BoundTrait>(arg: T) -> i32 {
         // instance method call (trait)
-        // <T as generics::base::BoundTrait>::method
+        // generics::base::BoundTrait::method
         arg.method()
     }
 
@@ -29,7 +29,7 @@ pub mod lib {
     // ForeignBoundTrait is implemented by generics::base::One and generics::base::Two.
     pub fn monomorphized_foreign_bound<T: ForeignBoundTrait>(arg: T) -> i32 {
         // instance method call (trait)
-        // <T as traits::lib::bounds::BoundTrait>::method
+        // traits::lib::bounds::BoundTrait::method
         // This call is similar to that of 'monomorphized' but the trait that bounds type parameter
         // T is defined in a different package than the function and the structs implementing it.
         arg.method()
@@ -37,7 +37,7 @@ pub mod lib {
 
     pub fn impl_trait(arg: impl ForeignBoundTrait) -> i32 {
         // instance method call (trait)
-        // <impl traits::lib::bound::BoundTrait as traits::lib::bounds::BoundTrait>::method
+        // traits::lib::bounds::BoundTrait::method
         // This call is equivalent to that of 'monomorphized_foreign_bound' as the compiler
         // produces the same ASM for both. However, produced MIR for the call differs slightly.
         arg.method()
@@ -47,7 +47,7 @@ pub mod lib {
     // which is concretized by i32.
     pub fn monomorphized_i32<T: GenericFooTrait<i32>>(arg: T) -> i32 {
         // instance method call (trait)
-        // <T as traits::lib::GenericFooTrait<i32>>::method
+        // traits::lib::GenericFooTrait<i32>::method
         arg.method()
     }
 
@@ -57,7 +57,7 @@ pub mod lib {
         where T: GenericFooTrait<P>
     {
         // instance method call (trait)
-        // <T as traits::lib::GenericFooTrait<P>>::method
+        // traits::lib::GenericFooTrait<P>::method
         arg.method()
     }
 }
