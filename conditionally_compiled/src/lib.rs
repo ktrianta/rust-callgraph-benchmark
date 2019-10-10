@@ -1,5 +1,3 @@
-// TODO: Define how conditionally compiled code should be handled by call-graph generators.
-
 pub mod lib {
     // Function 'bar' calls the version of 'foo' function that is compiled depending on whether
     // feature 'foo' is defined or not during compilation.
