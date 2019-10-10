@@ -29,7 +29,7 @@ pub mod lib {
 
     // 'dynamic_generic' function accepts as argument a generic trait object of type
     // traits::lib::GenericFooTrait<T> and calls 'method' on it. Dynamic dispatch is used to
-    // resolve this method calls.
+    // resolve this method call.
     pub fn dynamic_generic<T>(x: &dyn GenericFooTrait<T>) -> T {
         // instance method call (trait)
         // traits::lib::GenericTrait<T>::method

@@ -6,7 +6,7 @@ mod helpers {
 
         // TODO: Define which functions should be included in a call-graph for the call to 'bench'.
         // All the functions with matching signatures that are available at this scope and are
-        // declared in the current crate or one of its dependencies.
+        // declared in the current crate or one of its dependencies should be included.
         bench();
 
     }
