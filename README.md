@@ -10,10 +10,14 @@ functions and methods may be called in Rust code.
 
 ## Benchmark Structure
 
-The benchmark is built around the **main** package, which contains a single binary crate. To assess
-how cross-package calls are analyzed by call-graph generators we split the code across multiple
-library crates and packages. The **main** crate calls the functions and methods of these packages.
-Calls within package boundaries are also covered by most of the packages.
+The benchmark is built around the **main** package, which contains a single binary crate. The
+benchmark is organized in several packages, each one containing a subset of the available ways to
+call a function/method. These packages are **static_dispatch**, **dynamic_dispatch**,
+**generics**, **function_pointers**, **conditionally_compiled** and **macros**.
+
+Splitting the code across multiple packages and library crates allows for better code organization,
+but also for opportunities to assess how call graph generators analyze and resolve cross-package
+calls.
 
 ### main
 - Crates:
