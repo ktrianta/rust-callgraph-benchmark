@@ -8,7 +8,6 @@ edition = "2018"
 
 [features]
 foo = ["conditionally_compiled/foo"]
-bar = ["conditionally_compiled/bar"]
 
 [dependencies]
 conditionally_compiled = { path = "../conditionally_compiled" }
