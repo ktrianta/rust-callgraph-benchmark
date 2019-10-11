@@ -57,6 +57,13 @@ pub mod bench {
     mod helpers {
         use super::FooTrait;
 
+        // 'm1' and 'm2' share the same function signature if we ignore the function name. However,
+        // 'm1' is not called directly or indirectly (through a function pointer) in comparison to
+        // 'm2'. Nevertheless, an imprecise analysis might include both as possible targets of a
+        // function pointer call where actually 'm2' is the only pointed function. Such an analysis
+        // is sound as the function signatures match, meaning that a variable that points to 'm2'
+        // could also point to 'm1'.
+        #[allow(dead_code)]
         pub fn m1(obj: &dyn FooTrait) -> u32 {
             obj.method()
         }
