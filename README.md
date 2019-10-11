@@ -34,7 +34,7 @@ calls.
 - Depends on:
     nothing
 - Description:
-    Trait definitions used by the different benchmark libraries.
+    Trait definitions used by the individual benchmarks.
 
 ### structs
 - Crates:
@@ -42,33 +42,10 @@ calls.
 - Depends on:
     **traits**
 - Description:
-    Struct definitions. Struct and trait implementations.
+    Struct definitions and struct and trait implementations used by the individual benchmarks.
 - Call examples:
-```rust
-pub struct Two(i32);
-
-impl Two {
-    pub fn method_1(&self) -> i32 {
-        self.0 + 1
-    }
-
-    pub fn method_2(&mut self) -> i32 {
-        // instance method call (inherent)
-        // structs::lib::Two::add_one
-        // Call to inherent private method inside another method.
-        self.add_one();
-
-        // instance method call (inherent)
-        // structs::lib::Two::method_1
-        // Call to inherent public method inside another method.
-        self.method_1()
-    }
-
-    fn add_one(&mut self) {
-        self.0 = self.0 + 1;
-    }
-}
-```
+    * Call to inherent public method inside another method.
+    * Call to inherent private method inside another method.
 
 ### static\_dispatch
 - Crates:
@@ -80,70 +57,10 @@ impl Two {
     implemented by `T`. Test cases that target different calling conventions but also touch upon
     static method resolution and lookup.
 - Call examples:
-```rust
-use structs::lib::One;
-use structs::lib::Two;
-
-// static method call (inherent)
-// structs::lib::One::method_1
-One::method_1();
-
-// instance method call (inherent)
-// structs::lib::One::method_2
-let mut one = One;
-one.method_2();
-
-// instance method call (inherent)
-// structs::lib::One::method_2
-// Generates slightly different mir code than 'one.method_2()'.
-One.method_2();
-
-// static method call (inherent)
-// structs::lib::Two::new
-// Returns the Self type.
-let mut two = Two::new(0);
-
-// instance method call (inherent)
-// structs::lib::Two::method_1
-// Same name as structs::lib::One::method_1 but different signature and definition path.
-two.method_1();
-
-// instance method call (inherent)
-// structs::lib::Two::method_2
-// Same name and signature as structs::lib::One::method_2 but different definition path.
-two.method_2();
-```
-
-```rust
-use structs::lib::fat::Fat;
-use traits::lib::FooTrait;
-use traits::lib::BarTrait;
-
-let fat = Fat(100);
-
-// instance method call (inherent)
-// structs::lib::fat::Fat::method
-// Method lookup should resolve this call to structs::lib::fat::Fat::method and not to the methods
-// defined in the implementations of FooTrait or BarTrait by Fat
-// (https://doc.rust-lang.org/reference/expressions/method-call-expr.html).
-fat.method();
-
-// instance method call (trait)
-// structs::lib::fat::{impl FooTrait for Fat}::method
-// Fully qualified syntax call circumvents method lookup.
-FooTrait::method(&fat);
-
-// instance method call (trait)
-// structs::lib::fat::{impl BarTrait for Fat}::method
-// Fully qualified syntax `<T as TraitRef>::item` circumvents method lookup.
-<Fat as BarTrait>::method(&fat);
-
-// instance method call (trait)
-// structs::lib::fat::{impl BarTrait for Fat}::yet_another_method
-// Method structs::lib::fat::Fat::yet_another_method is not public, thus the call to
-// yet_another_method is resolved to that of BarTrait's implementation by Fat.
-fat.yet_another_method();
-```
+    * Static method call (inherent).
+    * Instance method call (inherent).
+    * Instance method call (inherent) on newly allocated object.
+    * Instance method call (trait) using fully qualified syntax.
 
 ### dynamic\_dispatch
 - Crates:
@@ -153,53 +70,10 @@ fat.yet_another_method();
 - Description:
     Trait objects and dynamic dispatch.
 - Call examples:
-```rust
-use traits::lib::FooTrait;
-
-// 'dynamic*' functions accept as argument a trait object of type traits::lib::FooTrait and
-// call 'method' on it. Dynamic dispatch is used to resolve these method calls.
-fn dynamic(x: &dyn FooTrait) -> u32 {
-    // instance method call (trait)
-    // traits::lib::FooTrait::method
-    // Dynamic dispatch.
-    x.method()
-}
-
-fn dynamic_ufcs(x: &dyn FooTrait) -> u32 {
-    // instance method call (trait)
-    // traits::lib::FooTrait::method
-    // Dynamic dispatch with fully qualified syntax.
-    FooTrait::method(x)
-}
-
-fn test() {
-    use structs::lib::fat::Fat;
-    use structs::lib::thin::Thin;
-
-    let fat = Fat(10);
-
-    // static function call
-    // dynamic_dispatch::lib::dynamic
-    // The dynamic dispatch call happens inside function 'dynamic'.
-    dynamic(&fat);  // &my_int is coerced to &FooTrait
-
-    // static function call
-    // dynamic_dispatch::lib::dynamic_ufcs
-    // Casting to &dyn FooTrait generates slightly more MIR code to account for the cast
-    // operation. We include it along the coercion version for completeness.
-    dynamic_ufcs(&fat as &dyn FooTrait);  // &my_int is casted to &FooTrait
-
-    let thin = Thin;
-    let vec: Vec<&dyn FooTrait> = vec![&fat, &thin];
-
-    for item in vec.iter() {
-        // instance method call (trait)
-        // traits::lib::FooTrait::method
-        // Dynamic dispatch on referenced vector elements.
-        item.method();
-    }
-}
-```
+    * Dynamic dispatch.
+    * Dynamic dispatch (qualified syntax).
+    * Dynamic dispatch on generic trait object.
+    * Dynamic dispatch on referenced vector elements.
 
 ### generics
 - Crates:
@@ -207,11 +81,11 @@ fn test() {
 - Depends on:
     **structs**, **traits**
 - Description:
-    Generic functions with trait bounds. At compile time, this generic code
-    is monomorphized.
+    Generic trait bounded functions and structs that are monomorphized during compilation.
 - Call examples:
-```rust
-```
+    * Call on generic type receiver (trait bounded).
+    * Call on generic type receiver (trait bounded by a generic trait).
+    * Call on generic type receiver (trait bounded by a generic trait which is concretized).
 
 ### function\_pointers
 - Crates:
@@ -219,10 +93,11 @@ fn test() {
 - Depends on:
     **structs**
 - Description:
-    Function pointer types declarations.
+    Function pointer and Fn trait instance calls.
 - Call examples:
-```rust
-```
+    * Call via function pointer.
+    * Call via generic function pointer.
+    * Call of an Fn trait instance.
 
 ### conditionally\_compiled
 - Crates:
@@ -231,9 +106,6 @@ fn test() {
     **structs**
 - Description:
     Conditionally compiled functions.
-- Call examples:
-```rust
-```
 
 ### macros
 - Crates:
@@ -243,16 +115,5 @@ fn test() {
 - Description:
     Function and method calls inside macros.
 - Call examples:
-```rust
-```
-
-### default
- - Crates:
-    1 library
- - Depends on:
-    *nothing*
- - Description:
-    Default trait methods. These could be part of the 'traits' module of the
-    **structs** crate, but we choose to introduce them as part of another crate
-    on which **structs** depends. This artificial dependency is introduced to
-    include transitive crate dependencies in the benchmark.
+    * Call inside declarative macro.
+    * Method definition and call generated by derive macro.
