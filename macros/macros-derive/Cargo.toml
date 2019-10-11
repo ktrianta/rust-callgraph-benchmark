@@ -1,12 +1,14 @@
 [package]
-name = "macros"
+name = "macros-derive"
 version = "0.1.0"
 authors = ["Konstantinos Triantafyllou <ko.trian@gmail.com>"]
 edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[lib]
+proc-macro = true
+
 [dependencies]
-structs = { path = "../structs" }
-traits = { path = "../traits" }
-macros-derive = { path = "./macros-derive" }
+syn = "0.14.4"
+quote = "0.6.3"

@@ -22,4 +22,9 @@ pub mod lib {
             fn method(&self) -> i32;
         }
     }
+
+    pub trait MacroTrait {
+        fn method(&self) -> u32;
+        fn another_method(&self) -> u32;
+    }
 }

@@ -10,26 +10,51 @@ pub mod lib {
 
                 let mut results = Vec::new();
                 $(
-                    results.push(FooTrait::method($x));
+                    // instance method call (trait)
+                    // structs::lib::fat::{impl FooTrait for Fat}::method
+                    // Fully qualified syntax call circumvents method lookup.
+                    let result = FooTrait::method($x);
+
+                    // instance method call (inherent)
+                    // std::vec::Vec::push
+                    results.push(result);
                 )*
                 results
             }
         };
     }
+
+    use macros_derive::Macros;
+    use traits::lib::MacroTrait;
+
+    #[derive(Macros)]
+    pub struct MacroStruct;
 }
 
 pub mod bench {
     pub fn run() {
         use crate::foo;
+        use crate::lib::MacroStruct;
         use structs::lib::fat::Fat;
         use structs::lib::thin::Thin;
+        use traits::lib::MacroTrait;
 
-        let fat = Fat(1000);
-        let thin = Thin;
-        let results = foo![&fat, &thin];
+        // instance method call (trait)
+        // macros::lib::{impl MacroTrait for MacroStruct}::method
+        // Implementation of method is generated using a derive macro.
+        let num1 = MacroStruct.method();
+
+        let mut num2 = 0;
+        let results = foo![&Fat(1000), &Thin];
 
         for result in results.iter() {
-            println!("{}", result);
+            num2 += result;
         }
+
+        // This is here to ensure that the above calls are not optimized away as dead code.
+        println!(
+            "Just making sure no code is deemed dead by the compiler: {}",
+            num1 + num2
+        );
     }
 }
