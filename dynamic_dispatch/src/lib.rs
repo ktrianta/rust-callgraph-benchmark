@@ -31,7 +31,7 @@ pub mod lib {
     pub fn dynamic_default(x: &dyn DefaultTrait) -> u32 {
         // instance method call (trait)
         // traits::lib::DefaultTrait::default_method
-        // Dynamic dispatch on trait onbject with default methods.
+        // Dynamic dispatch on trait object with default methods.
         x.default_method()
     }
 
@@ -69,7 +69,7 @@ pub mod bench {
         // dynamic_dispatch::lib::dynamic_ufcs
         // Casting to &dyn FooTrait generates slightly more MIR code to account for the cast
         // operation. We include it along the coercion version for completeness.
-        let num2 = dynamic_ufcs(&fat as &dyn FooTrait);  // &fat is casted to &FooTrait
+        let num2 = dynamic_ufcs(&fat as &dyn FooTrait);  // &fat is cast to &FooTrait
 
         // static function call
         // dynamic_dispatch::lib::dynamic_default
