@@ -1,6 +1,7 @@
 use traits::lib::FooTrait;
 use traits::lib::BarTrait;
 use traits::lib::BazTrait;
+use traits::lib::DefaultTrait;
 
 pub struct Fat(pub u32);
 
@@ -22,6 +23,10 @@ impl Fat {
     #[allow(dead_code)]
     fn yet_another_method(&self) -> u32 {
         self.0 + 2
+    }
+
+    pub fn default_method_no_self() -> u32 {
+       1
     }
 }
 
@@ -48,5 +53,15 @@ impl BarTrait for Fat {
 impl BazTrait for Fat {
     fn another_method(&self) -> u32 {
         self.0 + 1001
+    }
+}
+
+impl DefaultTrait for Fat {
+    fn default_method(&self) -> u32 {
+        1
+    }
+
+    fn default_method_no_self() -> u32 {
+        2
     }
 }

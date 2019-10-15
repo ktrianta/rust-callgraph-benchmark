@@ -45,8 +45,10 @@ pub mod bench_method_lookup {
         // Traits FooTrait, BarTrait and BazTrait are implemented by Fat.
         // BazTrait is not imported in the current scope and thus is not visible.
         use structs::lib::fat::Fat;
+        use structs::lib::thin::Thin;
         use traits::lib::FooTrait;
         use traits::lib::BarTrait;
+        use traits::lib::DefaultTrait;
 
         let fat = Fat(100);
 
@@ -66,23 +68,38 @@ pub mod bench_method_lookup {
         // Fully qualified syntax call circumvents method lookup.
         let num2 = FooTrait::method(&fat);
 
+        // static method call (inherent)
+        // structs::lib::fat::Fat::default_method_no_self
+        let num3 = Fat::default_method_no_self();
+
+        // static method call (trait)
+        // structs::lib::fat::{impl DefaultTrait for Fat}::default_method_no_self
+        // Called method overrides the default implementation defined in traits::lib::DefaultTrait
+        let num4 = <Fat as DefaultTrait>::default_method_no_self();
+
+        // static method call (trait default)
+        // traits::lib::DefaultTrait::default_method_no_self
+        // Only implementation of 'default_method_no_self' is the default one of DefaultTrait.
+        // Equivalent to '<Thin as DefaultTrait>::default_method_no_self();'
+        let num5 = Thin::default_method_no_self();
+
         // instance method call (trait)
         // structs::lib::fat::{impl BarTrait for Fat}::method
         // Fully qualified syntax `<T as TraitRef>::item` circumvents method lookup.
-        let num3 = <Fat as BarTrait>::method(&fat);
+        let num6 = <Fat as BarTrait>::method(&fat);
 
         // instance method call (trait)
         // structs::lib::fat::{impl BarTrait for Fat}::another_method
         // BazTrait is not in scope and Fat provides 'another_method(&mut self) -> u32', but as
         // stated in https://doc.rust-lang.org/reference/expressions/method-call-expr.html, &self
         // methods are looked up first, thus the call is resolved to BarTrait's method.
-        let num4 = fat.another_method();
+        let num7 = fat.another_method();
 
         // instance method call (trait)
         // structs::lib::fat::{impl BarTrait for Fat}::yet_another_method
         // Method structs::lib::fat::Fat::yet_another_method is not public, thus the call to
         // yet_another_method is resolved to that of BarTrait's implementation by Fat.
-        let num5 = fat.yet_another_method();
+        let num8 = fat.yet_another_method();
 
         {
             use traits::lib::BazTrait;
@@ -93,16 +110,16 @@ pub mod bench_method_lookup {
 
             // instance method call (trait)
             // structs::lib::fat::{impl BarTrait for Fat}::another_method
-            let num6 = <Fat as BarTrait>::another_method(&fat);
+            let num9 = <Fat as BarTrait>::another_method(&fat);
 
             // instance method call (trait)
             // structs::lib::fat::{impl BazTrait for Fat}::another_method
-            let num7 = <Fat as BazTrait>::another_method(&fat);
+            let num10= <Fat as BazTrait>::another_method(&fat);
 
             // This is here to ensure that the above calls are not optimized away as dead code.
             println!(
                 "Just making sure no code is deemed dead by the compiler: {}",
-                num1 + num2 + num3 + num4 + num5 + num6 + num7
+                num1 + num2 + num3 + num4 + num5 + num6 + num7 + num8 + num9 + num10
             );
         }
     }

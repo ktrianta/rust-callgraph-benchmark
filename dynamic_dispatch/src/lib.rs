@@ -8,6 +8,7 @@
 
 pub mod lib {
     use traits::lib::FooTrait;
+    use traits::lib::DefaultTrait;
     use traits::lib::GenericFooTrait;
 
     // 'dynamic' and 'dynamic_ufcs' functions accept as argument a trait object of type
@@ -27,6 +28,13 @@ pub mod lib {
         FooTrait::method(x)
     }
 
+    pub fn dynamic_default(x: &dyn DefaultTrait) -> u32 {
+        // instance method call (trait)
+        // traits::lib::DefaultTrait::default_method
+        // Dynamic dispatch on trait onbject with default methods.
+        x.default_method()
+    }
+
     // 'dynamic_generic' function accepts as argument a generic trait object of type
     // traits::lib::GenericFooTrait<T> and calls 'method' on it. Dynamic dispatch is used to
     // resolve this method call.
@@ -42,6 +50,7 @@ pub mod bench {
     pub fn run() {
         use crate::lib::dynamic;
         use crate::lib::dynamic_ufcs;
+        use crate::lib::dynamic_default;
         use crate::lib::dynamic_generic;
         use structs::lib::fat::Fat;
         use structs::lib::thin::Thin;
@@ -63,11 +72,20 @@ pub mod bench {
         let num2 = dynamic_ufcs(&fat as &dyn FooTrait);  // &fat is casted to &FooTrait
 
         // static function call
+        // dynamic_dispatch::lib::dynamic_default
+        // Dynamic dispatch on DefaultTrait trait object with default method 'default_method'.
+        // structs::lib::fat::Fat implements DefaultTrait overriding 'default_method' whereas
+        // does not. Here a reference to &Fat is passed to 'dynamic_default'. However, if an
+        // analysis does not consider references and pointers it should take into account all
+        // possible implementations of DefaultTrait to be sound.
+        let num3 = dynamic_default(&fat);
+
+        // static function call
         // dynamic_dispatch::lib::dynamic_generic
         // Casting to the concrete type of generic trait GenericFooTrait for disambiguation, as
         // Thin implements both GenericFooTrait<i32> and GenericFooTrait<u32>, which match generic
         // type parameter GenericFooTrait<T>.
-        let num3 = dynamic_generic(&thin as &dyn GenericFooTrait<u32>);
+        let num4 = dynamic_generic(&thin as &dyn GenericFooTrait<u32>);
 
         // NOTE: In the above calls a precise Pointer Analysis would be able to compute that only
         // objects of type Fat are passed to function 'dynamic' and 'dynamic_ufcs' under the
@@ -77,19 +95,19 @@ pub mod bench {
         // be different in these cases.
 
         let vec: Vec<&dyn FooTrait> = vec![&fat, &thin];
-        let mut num4 = 0;
+        let mut num5 = 0;
 
         for item in vec.iter() {
             // instance method call (trait)
             // traits::lib::FooTrait::method
             // Dynamic dispatch on referenced vector elements.
-            num4 += item.method();
+            num5 += item.method();
         }
 
         // This is here to ensure that the above calls are not optimized away as dead code.
         println!(
             "Just making sure no code is deemed dead by the compiler: {}",
-            num1 + num2 + num3 + num4
+            num1 + num2 + num3 + num4 + num5
         );
     }
 }

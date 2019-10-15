@@ -27,4 +27,17 @@ pub mod lib {
         fn method(&self) -> u32;
         fn another_method(&self) -> u32;
     }
+
+    pub trait DefaultTrait {
+        fn default_method(&self) -> u32 {
+            0
+        }
+
+        // In order to be able to do dynamic dispatch on DefaultTrait it has to be a Sized type.
+        // By default traits are Unsized types.
+        fn default_method_no_self() -> u32 where Self: Sized {
+            0
+        }
+    }
+
 }

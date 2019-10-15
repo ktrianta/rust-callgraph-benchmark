@@ -1,4 +1,5 @@
 use traits::lib::FooTrait;
+use traits::lib::DefaultTrait;
 use traits::lib::GenericFooTrait;
 
 pub struct Thin;
@@ -20,3 +21,5 @@ impl GenericFooTrait<u32> for Thin {
         42
     }
 }
+
+impl DefaultTrait for Thin {}
