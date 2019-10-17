@@ -11,7 +11,7 @@ pub mod lib {
                 let mut results = Vec::new();
                 $(
                     // instance method call (trait)
-                    // structs::lib::fat::{impl FooTrait for Fat}::method
+                    // structs::lib::fat::{impl FooTrait for type_of($x)}::method
                     // Fully qualified syntax call circumvents method lookup.
                     let result = FooTrait::method($x);
 
