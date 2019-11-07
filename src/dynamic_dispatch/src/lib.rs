@@ -28,6 +28,9 @@ pub mod lib {
         FooTrait::method(x)
     }
 
+    // 'dynamic_default' function accepts as argument a trait object with default methods of type
+    // traits::lib::GenericFooTrait<T> and calls 'default_method' on it. Dynamic dispatch is used to
+    // resolve this method call.
     pub fn dynamic_default(x: &dyn DefaultTrait) -> u32 {
         // instance method call (trait)
         // traits::lib::DefaultTrait::default_method
@@ -41,7 +44,7 @@ pub mod lib {
     pub fn dynamic_generic<T>(x: &dyn GenericFooTrait<T>) -> T {
         // instance method call (trait)
         // traits::lib::GenericTrait<T>::method
-        // Dynamic dispatch with fully qualified syntax.
+        // Dynamic dispatch on generic trait object.
         GenericFooTrait::<T>::method(x)
     }
 }
@@ -75,9 +78,10 @@ pub mod bench {
         // dynamic_dispatch::lib::dynamic_default
         // Dynamic dispatch on DefaultTrait trait object with default method 'default_method'.
         // structs::lib::fat::Fat implements DefaultTrait overriding 'default_method' whereas
-        // does not. Here a reference to &Fat is passed to 'dynamic_default'. However, if an
-        // analysis does not consider references and pointers it should take into account all
-        // possible implementations of DefaultTrait to be sound.
+        // structs::lib::thin::Thin does not. Here a reference to &Fat is passed to
+        // 'dynamic_default'. However, if an analysis does not consider references and pointers,
+        // in order to be sound, it should take into account all possible implementations of
+        // DefaultTrait and the fact that some might not implement its default methods.
         let num3 = dynamic_default(&fat);
 
         // static function call
@@ -87,7 +91,7 @@ pub mod bench {
         // type parameter GenericFooTrait<T>.
         let num4 = dynamic_generic(&thin as &dyn GenericFooTrait<u32>);
 
-        // NOTE: In the above calls a precise Pointer Analysis would be able to compute that only
+        // NOTE: In the above calls a precise pointer analysis would be able to compute that only
         // objects of type Fat are passed to function 'dynamic' and 'dynamic_ufcs' under the
         // specific context, whereas an object of type Thin is passed to function 'dynamic_generic'.
         // In contrast a more imprecise analysis like Class Hierarchy Analysis should assume that
