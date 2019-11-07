@@ -15,8 +15,14 @@ benchmark is organized in several packages, each one containing a subset of the 
 call a function/method. These packages are **static_dispatch**, **dynamic_dispatch**,
 **generics**, **function_pointers**, **conditionally_compiled** and **macros**.
 
-All packages reside under the **src** directory accompanied by a [README](src/README.md) describing each package and the purpose they serve.
+All packages reside under the **src** directory accompanied by a [README](src/README.md) describing
+each package and the purpose they serve.
 
 Splitting the code across multiple packages and library crates allows for better code organization,
 but also for opportunities to assess how call graph generators analyze and resolve cross-package
 calls.
+
+## Call-graph Generators Evaluations
+
+The results of the call-graph generators evaluations we have conducted can be found under the
+[evaludations directory](evaluations).
