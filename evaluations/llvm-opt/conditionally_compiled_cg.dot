@@ -1,0 +1,38 @@
+digraph "Call graph" {
+	label="Call graph";
+
+	Node0x55d97da2bca0 [shape=record,label="{external node}"];
+	Node0x55d97da2bca0 -> Node0x55d97da2bd40;
+	Node0x55d97da2bca0 -> Node0x55d97da2c630;
+	Node0x55d97da2bca0 -> Node0x55d97da2bd70;
+	Node0x55d97da2bca0 -> Node0x55d97da2c7b0;
+	Node0x55d97da2bca0 -> Node0x55d97da24a60;
+	Node0x55d97da2bca0 -> Node0x55d97da28ad0;
+	Node0x55d97da2bca0 -> Node0x55d97da28b40;
+	Node0x55d97da2bca0 -> Node0x55d97da249f0;
+	Node0x55d97da2bca0 -> Node0x55d97da28be0;
+	Node0x55d97da2bca0 -> Node0x55d97da2c7e0;
+	Node0x55d97da2bd40 [shape=record,label="{_ZN4core3fmt10ArgumentV13new17hcfe29ffe43d77ebaE}"];
+	Node0x55d97da24a60 [shape=record,label="{llvm.dbg.declare}"];
+	Node0x55d97da2bde0 [shape=record,label="{_ZN4core3fmt9Arguments6new_v117hded334f24add80ddE}"];
+	Node0x55d97da2c630 [shape=record,label="{_ZN22conditionally_compiled3lib3bar17h7831a10e1ba069ddE}"];
+	Node0x55d97da2c630 -> Node0x55d97da2bd70;
+	Node0x55d97da2bd70 [shape=record,label="{_ZN22conditionally_compiled3lib3foo17he842e78e419c5d3cE}"];
+	Node0x55d97da2bd70 -> Node0x55d97da2c710;
+	Node0x55d97da2c710 [shape=record,label="{_ZN22conditionally_compiled3lib8base_two17hc9f9b8da4283d985E}"];
+	Node0x55d97da2c7b0 [shape=record,label="{_ZN22conditionally_compiled5bench3run17h2c7896740f97a294E}"];
+	Node0x55d97da2c7b0 -> Node0x55d97da2c630;
+	Node0x55d97da2c7b0 -> Node0x55d97da2bd70;
+	Node0x55d97da2c7b0 -> Node0x55d97da2bd40;
+	Node0x55d97da2c7b0 -> Node0x55d97da2bde0;
+	Node0x55d97da2c7b0 -> Node0x55d97da2c7e0;
+	Node0x55d97da2c7b0 -> Node0x55d97da249f0;
+	Node0x55d97da28ad0 [shape=record,label="{llvm.uadd.with.overflow.i32}"];
+	Node0x55d97da28b40 [shape=record,label="{llvm.expect.i1}"];
+	Node0x55d97da2c7e0 [shape=record,label="{_ZN3std2io5stdio6_print17he35bad81a54ba3dfE}"];
+	Node0x55d97da2c7e0 -> Node0x55d97da2bcd0;
+	Node0x55d97da28be0 [shape=record,label="{_ZN4core3fmt3num3imp52_$LT$impl$u20$core..fmt..Display$u20$for$u20$u32$GT$3fmt17h7aa4e3c5490ccb71E}"];
+	Node0x55d97da28be0 -> Node0x55d97da2bcd0;
+	Node0x55d97da249f0 [shape=record,label="{_ZN4core9panicking5panic17h2d0bc53a963fb996E}"];
+	Node0x55d97da249f0 -> Node0x55d97da2bcd0;
+}
