@@ -11,6 +11,16 @@
 | macro                  |             100% |
 | conditionally compiled | 50% <sup>2</sup> |
 
+LLVM opt is able to resolve static dispatch calls. On the other hand, it is unable to resolve
+function calls that have dynamic features, i.e., dynamic dispatch and function pointer calls.
+
+Regarding calls that reside in conditionally compiled code blocks, only those that are inside code
+blocks whose condition evaluates to true are analyzed.
+
+A potential limitation of LLVM opt is that it is not able to analyze the dependencies of a package.
+Of course, this can turn to an advantage if we want to analyze only the application code and ignore
+the dependencies (library) code.
+
 <p>
     <sup>1</sup> Generic calls (and generics in general) are monomorphized (concretized) during
     LLVM IR code generation. This way they are basically equivalent to static dispatch calls and
