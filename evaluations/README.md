@@ -2,14 +2,14 @@
 
 ## LLVM opt
 
-| Call type                           | Resolved %  | 
-| ----------------------------------- | -----------:|
-| static dispatch                     |        100% |
-| dynamic dispatch                    |          0% |
-| generic <sup>1</sup>                |        100% |
-| function pointer                    |          0% |
-| macro                               |        100% |
-| conditionally compiled <sup>2</sup> |         50% |
+| Call type              | Resolved %       | 
+| ---------------------- | ----------------:|
+| static dispatch        |             100% |
+| dynamic dispatch       |               0% |
+| generic <sup>1</sup>   |             100% |
+| function pointer       |               0% |
+| macro                  |             100% |
+| conditionally compiled | 50% <sup>2</sup> |
 
 <p>
     <sup>1</sup> Generic calls (and generics in general) are monomorphized (concretized) during
