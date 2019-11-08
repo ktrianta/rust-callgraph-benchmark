@@ -11,7 +11,7 @@ functions and methods may be called in Rust code.
 ## Benchmark Structure
 
 The benchmark is built around the **main** package, which contains a single binary crate. The
-benchmark is organized in several packages, each one containing a subset of the available ways to
+benchmark is organized into several packages, each one containing a subset of the available ways to
 call a function/method. These packages are **static_dispatch**, **dynamic_dispatch**,
 **generics**, **function_pointers**, **conditionally_compiled** and **macros**.
 
