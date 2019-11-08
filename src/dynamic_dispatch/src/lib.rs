@@ -1,10 +1,10 @@
 // Dynamic dispatch
 //
 // Dynamic dispatch in Rust is tightly coupled with trait objects. The set of target methods of a
-// dynamic dispatch call might include all overriding methods of the trait's implementations as
-// part of a sound call-graph. For example, this would be the output of a Class Hierarchy Analysis,
-// whereas other analyses such as Pointers Analysis might be able to give more precise results in
-// certain cases.
+// dynamic dispatch call might include all overriding methods of the trait's implementations.
+// A sound call-graph generated using a Class Hierarchy Analysis would create exactly such a set
+// for every dynamic dispatch call. More precise analyses, e.g., Pointer Analysis, might be able
+// to give more precise results while still being sound.
 
 pub mod lib {
     use traits::lib::FooTrait;
