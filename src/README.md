@@ -1,5 +1,32 @@
 # Benchmark Packages
 
+The benchmark is organized into several packages, each one targeting a specific type of call, e.g.,
+**static dispatch** or **dynamic dispatch** calls.
+
+Next we present each package by providing a general description and descriptions for several "types"
+of calls with links to the actual benchmark code. The benchmark includes several more calls, which
+can be accessed by following the links of the example calls or by simply browsing the benchmark
+code. For each "type" of call at least the following documentation is provided, as demonstrated in
+the following example:
+
+```Rust
+// instance method call (trait)
+// traits::lib::FooTrait::method
+// Dynamic dispatch with fully qualified syntax.
+FooTrait::method(x)
+```
+
+The first comment line gives a description of the "type" of the call. A call could be static or
+instance call, function or method call, and it could be defined in a struct's implementation
+(inherent) or in a trait's implementation (trait).
+
+The second comment line specifies the target functions/methods. In dynamic scenarios such as
+dynamic dispatch calls and function pointer calls the target method/function is the trait
+defined method and the function employed by the function pointer respectively.
+
+The third comment line gives a more detailed description of the call and the reasons behind
+its inclusion in the benchmark.
+
 ## main
 - Description:
     Main benchmark code. Calls the benchmarks defined in the supporting benchmark packages.
