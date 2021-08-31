@@ -1,0 +1,11 @@
+digraph {
+    0 [ label = "\"macros::lib::{impl#0}::method\"" ]
+    1 [ label = "\"macros::lib::{impl#0}::another_method\"" ]
+    2 [ label = "\"macros::bench::run\"" ]
+    3 [ label = "\"structs::lib::fat::{impl#1}::method\"" ]
+    4 [ label = "\"structs::lib::thin::{impl#0}::method\"" ]
+    0 -> 1 [ ]
+    2 -> 0 [ ]
+    2 -> 3 [ ]
+    2 -> 4 [ ]
+}
