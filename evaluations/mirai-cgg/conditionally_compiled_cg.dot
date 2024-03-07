@@ -1,0 +1,10 @@
+digraph {
+    0 [ label = "\"conditionally_compiled::lib::bar\"" ]
+    1 [ label = "\"conditionally_compiled::lib::foo\"" ]
+    2 [ label = "\"conditionally_compiled::lib::base_two\"" ]
+    3 [ label = "\"conditionally_compiled::bench::run\"" ]
+    0 -> 1 [ ]
+    1 -> 2 [ ]
+    3 -> 0 [ ]
+    3 -> 1 [ ]
+}

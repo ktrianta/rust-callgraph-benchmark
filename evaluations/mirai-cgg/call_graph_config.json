@@ -1,0 +1,18 @@
+{
+    "dot_output_path": "./graph.dot",
+    "reductions": [
+        "Fold",
+        "Clean",
+        "Deduplicate"
+    ],
+    "included_crates": [
+        "structs::lib", 
+        "traits::lib",
+        "static_dispatch",
+        "dynamic_dispatch",
+        "generics",
+        "function_pointers",
+        "macros",
+        "conditionally_compiled"
+    ]
+}
